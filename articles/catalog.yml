@@ -2,33 +2,20 @@ PREDEF:
 # はじめに（完了）
  - 00_introduction.re
 
-# フローチャートを作りたい
-# 00_flowchart.re
-
 CHAPS:
-# 簡単な監視を始めよう
-- 110_start.re
+# 本書が目指す内容
+# Bluetoothはなぜ繋がるのか
+# モバイルプリンター
+# 電子はかり
+# 電子ペーパー
 
-# ダッシュボードを作ってみよう
-- 120_dashboard.re
-
-# 定点カメラで自動撮影しよう
-- 130_camera.re
-
-# センサーを使ってモニタリングしよう
-- 140_sensor.re
-
-# すべてのデータをダッシュボードに反映させよう
-- 145_finishing.re
-
-# 装置を作ってみよう
-- 150_device.re
+# Androidアプリを作ってみよう
 
 # # その他
 # - 10_other.re
 
 # 4コマ漫画
-- XX_4koma.re
+# - XX_4koma.re
 
 POSTDEF:
 # あとがき
