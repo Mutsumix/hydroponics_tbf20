@@ -1,0 +1,67 @@
+PREDEF:
+# はじめに（完了）
+ - 00_introduction.re
+
+# フローチャートを作りたい
+# 00_flowchart.re
+
+CHAPS:
+# 簡単な監視を始めよう
+- 110_start.re
+
+# ダッシュボードを作ってみよう
+- 120_dashboard.re
+
+# 定点カメラで自動撮影しよう
+- 130_camera.re
+
+# センサーを使ってモニタリングしよう
+- 140_sensor.re
+
+# すべてのデータをダッシュボードに反映させよう
+- 145_finishing.re
+
+# 装置を作ってみよう
+- 150_device.re
+
+# # その他
+# - 10_other.re
+
+# 4コマ漫画
+- XX_4koma.re
+
+POSTDEF:
+# あとがき
+ - 99_postscript.re
+
+# 気になること
+
+# docker run --rm -v $(pwd)/articles:/work vvakame/review:5.9 /bin/sh -c "cd /work && rake pdf"
+
+# ★技術・機器一覧
+# 言語：Python
+# 使用サービス：AWS、GCP、ThingSpeak、Grafana
+# 使用機器：
+# SwitchBot 温湿度計、SwitchBot ハブ、ネットワークカメラ
+# USB接続のWebカメラ
+# ラズベリーパイ、Seeeduino（Arduino互換機）、各種センサー
+
+# 前回（tbh18）のメモ
+# 全角半角の数字
+
+# 残りの時間を見積もってみる(5/3)
+# cultivationにあと3時間(5/4 完了)
+# sensorに6時間（5/17 完了）
+# recipeに2時間（5/5 完了）
+# 写真撮影に2時間
+# 図の作成に3時間
+# 校正・推敲に6時間
+# といったところ。
+# 22時間あればできるので、丸一日ぶっ通しで書けば完成する見通し。
+
+# 5/18 を入稿の締切に設定。早割の利用を狙う
+
+# 5/12 予想通りsensorに時間がかかっている
+# 5/17　 sensor完了。次は装置関係の写真を撮らなければいけない
+# 5/18 装置関係の写真を撮影。原稿と関係ないけど、出品情報を編集して審査に提出
+# 5/23 大体書き終わった ４コマ書くって言っちゃった。どうしよう
