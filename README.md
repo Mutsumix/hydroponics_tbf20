@@ -1,4 +1,4 @@
-# 技術書典 20 「Android・bluetooth・植物」
+# 技術書典 20 「Android/bluetooth/植物」
 
 技術書典 20 の原稿管理用リポジトリです。
 

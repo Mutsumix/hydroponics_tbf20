@@ -4,7 +4,12 @@ PREDEF:
 
 CHAPS:
 # 本書が目指す内容
-# Bluetoothはなぜ繋がるのか
+# 
+- 10_android.re
+- 20_bluetooth.re
+
+
+- 30_plant.re
 # モバイルプリンター
 # 電子はかり
 # 電子ペーパー
