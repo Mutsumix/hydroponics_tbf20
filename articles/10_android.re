@@ -94,9 +94,9 @@ Wear OS（旧Android Wear）は、2014年に発表されたスマートウォッ
 //image[pixel_watch][Pixel Watch][scale=0.5]
 //footnote[pixel_watch]["Google Pixel Watch 2, shown in Shibuya Stream" by Syced is marked with CC0 1.0 (パブリックドメイン)]
 
-//embed[latex]{
-\clearpage
-//}
+#@# //embed[latex]{
+#@# \clearpage
+#@# //}
 
 == Androidの仕組み
 

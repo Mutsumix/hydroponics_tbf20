@@ -225,9 +225,9 @@ gatt.writeDescriptor(descriptor)
 スキャン、接続、サービス発見、サブスクライブという4つのステップが、それぞれ数行のコードで表現できています。ログで追いかけた各段階が、コード上ではAPIの呼び出しとして対応していることがわかります。本書のアプリでは、これらをさらに@<tt>{ScaleClient}というクラスにまとめて、画面側からは「接続して」「切断して」といった単純な操作だけで済むようにしています。
 
 
-//embed[latex]{
-\clearpage
-//}
+#@# //embed[latex]{
+#@# \clearpage
+#@# //}
 
 == モバイルプリンター：Bluetooth Classicの通信
 
@@ -315,9 +315,9 @@ Bluetooth Classicのペアリング、チャンネルの確立、エラーハン
 BLEはプロトコルが標準化されており、Android APIで直接操作できるため、通信の各段階を細かく制御・観察できます。一方、Bluetooth ClassicはSDKが提供されている場合、通信の詳細は隠蔽されますが、その分、開発者は印刷ロジックに集中できます。
 
 
-//embed[latex]{
-\clearpage
-//}
+#@# //embed[latex]{
+#@# \clearpage
+#@# //}
 
 == 電子ペーパー：ESP32経由のHTTP通信
 
