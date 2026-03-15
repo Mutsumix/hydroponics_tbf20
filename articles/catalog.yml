@@ -3,20 +3,14 @@ PREDEF:
  - 00_introduction.re
 
 CHAPS:
-# 本書が目指す内容
-# 
-- 10_android.re
-- 20_bluetooth.re
-
-
-- 30_device.re
-# モバイルプリンター
-# 電子はかり
-# 電子ペーパー
-
-# Androidアプリを作ってみよう
-- 40_android.re
-- 50_claudecode.re
+  - 第1部 Android:
+    - 10_android.re
+  - 第2部 Bluetooth:
+    - 20_bluetooth.re
+    - 30_device.re
+  - 第3部 植物:
+    - 40_android.re
+    - 50_claudecode.re
 
 # # その他
 # - 10_other.re
