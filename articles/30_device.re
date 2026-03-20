@@ -2,45 +2,59 @@
 
 前章までで、Androidというプラットフォームの特徴と、Bluetoothという通信技術の仕組みを学びました。この章では、いよいよ実際のデバイスをAndroidアプリから操作し、その通信ログを読み解いていきます。
 
-本書のアプリは3つのデバイスと通信します。電子はかり（BLE）、モバイルプリンター（Bluetooth Classic）、電子ペーパータグ（HTTP経由）。それぞれ通信方式が異なるため、前章で学んだBluetooth ClassicとBLEの違いが、実際のコードとログにどう現れるかを体験できます。
+本章で使用するアプリは3つのデバイスと通信します。電子はかり（BLE）、モバイルプリンター（Bluetooth Classic）、電子ペーパータグ（HTTP経由）。
+それぞれ通信方式が異なるため、前章で学んだBluetooth ClassicとBLEの違いが、実際のコードとログにどう現れるかを確認できます。
 
+この章を読むことで、Bluetoothの通信を理解することができると思いますので、
+紹介する端末がやAndroid端末そのものがなくても、読み進めていただいて大丈夫です。
 
 == アプリの概要
 
-=== 技術スタック
+TODO: アプリの名称、リンク、ストアのキャプチャ
 
-本書のアプリはKotlinで記述し、Jetpack Compose（Material 3）でUIを構成しています。アーキテクチャにはMVVM（Model-View-ViewModel）を採用し、各画面がScreen（View）、ViewModel、UiStateの3層で構成されています。
+各端末操作の処理の流れをログを見ながら追っていきます。
+本書執筆のために筆者が作成したものをAndroidのPlay Storeに公開しています。
 
-//table[tech_stack][アプリの技術スタック]{
-技術	用途
----------------------------------------------------------
-Kotlin	開発言語
-Jetpack Compose	UI構築（Material 3）
-Kotlin Coroutines / Flow	非同期処理・状態管理
-Android BLE API	電子はかりとのBLE通信
-StarXpand SDK	モバイルプリンターとのBluetooth Classic通信
-OkHttp	電子ペーパータグへのHTTP通信
-Room	計量データのローカル保存
-//}
+GitHubにもソースコードを公開しているので、興味のある方は、直接Kotlinのコードを見ることも可能です。
 
-=== ログの仕組み
+#@# === 技術スタック
+
+#@# 本書のアプリはKotlinで記述し、Jetpack Compose（Material 3）でUIを構成しています。アーキテクチャにはMVVM（Model-View-ViewModel）を採用し、各画面がScreen（View）、ViewModel、UiStateの3層で構成されています。
+
+#@# //table[tech_stack][アプリの技術スタック]{
+#@# 技術	用途
+#@# ---------------------------------------------------------
+#@# Kotlin	開発言語
+#@# Jetpack Compose	UI構築（Material 3）
+#@# Kotlin Coroutines / Flow	非同期処理・状態管理
+#@# Android BLE API	電子はかりとのBLE通信
+#@# StarXpand SDK	モバイルプリンターとのBluetooth Classic通信
+#@# OkHttp	電子ペーパータグへのHTTP通信
+#@# Room	計量データのローカル保存
+#@# //}
+
+=== ログの仕組みと読み方
 
 通信の流れを理解するために、本書ではアプリが出力するログを活用します。各デバイスとの通信を担当するクライアントクラスがKotlinのStateFlowでログを蓄積し、画面にリアルタイムで表示します。
 
 ログの形式は以下のようになっています。
 
-//emlist{
+//emlistnum{
 [14:23:45.001][SCAN] Starting BLE scan (filter: "Decent Scale")
 [14:23:46.234][SCAN] Found: Decent Scale (XX:XX:XX:XX:XX:XX) RSSI=-42dBm
 [14:23:47.123][GATT] Connected (status=0)
+[14:23:47.456][GATT] Services discovered (count=3)
+[14:23:47.789][NOTIFY] Subscribed: FFF4 (weight data)
+[14:23:48.012][WRITE] Sent to FFF0: 03 0F 00 00 00 00 0C (tare command)
+[14:23:48.234][NOTIFY] Received from FFF4: 03 CE 00 00 01 02 ... (weight=0.0g)
 //}
 
-角括弧の1つ目がタイムスタンプ（ミリ秒精度）、2つ目が操作の種別です。@<tt>{SCAN}はBLEスキャン、@<tt>{GATT}はGATT接続・サービス発見、@<tt>{NOTIFY}はNotify受信、@<tt>{WRITE}はWrite送信を表します。
+角括弧の1つ目がタイムスタンプ（ミリ秒精度）、2つ目が操作の種別です。例えば@<tt>{SCAN}はBLEスキャン、@<tt>{GATT}はGATT接続・サービス発見、@<tt>{NOTIFY}はNotify受信、@<tt>{WRITE}はWrite送信を表します。
 
 この形式により、前章で学んだBLE通信の各段階（スキャン→接続→サービス発見→サブスクライブ→データ送受信）が、ログのどこに対応するかが一目でわかります。
 
 
-== 電子はかり：BLE通信の実践
+== 電子はかり：BLE通信
 
 この章の主役は電子はかりです。BLEのGATT通信（スキャン、接続、サービス発見、Notify、Write）のすべてを、実際のログを追いながら体験していきます。
 
@@ -49,13 +63,15 @@ Room	計量データのローカル保存
 === 製品紹介：Decent Scale
 
 TODO: ここに電子はかりの写真を挿入
+TODO: 価格、入手先、メーカー
 
 使用するのは、香港のエスプレッソマシンメーカーDecentが製造する電子はかりです。この会社の特徴的な点は、製品の通信仕様をGitHubで公開し、サードパーティからの接続を歓迎していることです@<fn>{decent_github}。BLEのサービスUUID、キャラクタリスティック、データフォーマットがすべてドキュメント化されており@<fn>{decent_api}、3Dモデルまで公開する徹底ぶりです。
 
 //footnote[decent_github][@<href>{https://github.com/decentespresso/openscale}]
 //footnote[decent_api][@<href>{https://decentespresso.com/decentscale_api}]
 
-製品を開封してもマニュアル類は一切入っていません。ネット上で公開されている仕様書がすべてです。ファームウェアのアップデートが前提の、現代的な製品らしい割り切りです。
+製品を開封してもマニュアル類は一切入っていません。ネット上で公開されている仕様書がすべてです。
+ファームウェアのアップデートが前提の、現代的な割り切りだと思いました。
 
 === ステップ1：スキャンとアドバタイズの発見
 
@@ -63,7 +79,7 @@ BLE通信の最初のステップは、周囲のデバイスをスキャンす�
 
 アプリ側のコードでは、Android標準のBLE API（@<tt>{BluetoothLeScanner}）を使い、デバイス名「Decent Scale」でフィルタリングしたスキャンを実行します。
 
-//emlist{
+//emlistnum{
 [14:23:45.001][SCAN] Starting BLE scan (filter: "Decent Scale")
 [14:23:46.234][SCAN] Found: Decent Scale (C4:DE:E2:XX:XX:XX) RSSI=-42dBm
 [14:23:46.235][SCAN] Scan stopped
@@ -77,7 +93,7 @@ BLE通信の最初のステップは、周囲のデバイスをスキャンす�
 
 //footnote[gatt_spec][GATTの技術仕様はBluetooth SIGが公開しています（@<href>{https://www.bluetooth.com/specifications/specs/}）。ただしCore Specificationは3000ページ超と聖書より多いので、通読して理解するのは現実的ではありません。実務では、Nordic SemiconductorやAndroid Developersの解説記事から入る方がおすすめです。]
 
-//emlist{
+//emlistnum{
 [14:23:46.500][GATT] Connecting to C4:DE:E2:XX:XX:XX (transport=LE)...
 [14:23:47.123][GATT] Connected (status=0)
 [14:23:47.124][GATT] Discovering services...
@@ -87,7 +103,7 @@ BLE通信の最初のステップは、周囲のデバイスをスキャンす�
 
 接続が確立すると、すぐにサービス発見（Service Discovery）が始まります。第2章で説明したように、BLEデバイスはサービスとキャラクタリスティックという階層構造でデータを公開しています。セントラルは接続後にこの構造を問い合わせ、「このデバイスは何ができるのか」を把握します。
 
-//emlist{
+//emlistnum{
 [14:23:47.456][GATT] Services discovered: 3 service(s)
 [14:23:47.457][GATT]   Service: FFF0 (2 characteristic(s))
 [14:23:47.458][GATT]     └ FFF4 [Notify]
@@ -115,7 +131,7 @@ FFF4	Notify	重量データのストリーミング（はかり → スマホ）
 
 サービス構造がわかったら、重量データを受信するためにNotifyをサブスクライブ（購読登録）します。
 
-//emlist{
+//emlistnum{
 [14:23:47.500][NOTIFY] Subscribing to FFF4...
 [14:23:47.501][NOTIFY] Writing CCCD descriptor (0x0001 = ENABLE_NOTIFICATION)
 [14:23:47.600][NOTIFY] Enabled on FFF4 (CCCD=0x0001)
@@ -130,7 +146,7 @@ FFF4	Notify	重量データのストリーミング（はかり → スマホ）
 
 サブスクライブが完了すると、電子はかりは毎秒約10回（10Hz）の頻度で重量データを送信し始めます。何も載せていなくても、0gのデータが送られ続けます。
 
-//emlist{
+//emlistnum{
 [14:23:47.700][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
 [14:23:47.800][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
 [14:23:47.900][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
@@ -163,7 +179,7 @@ FFF4	Notify	重量データのストリーミング（はかり → スマホ）
 
 安定（stable）と不安定（unstable）の区別も興味深い点です。はかりに物を載せた直後は重量が変動するため「不安定」状態になり、値が安定すると「安定」に切り替わります。食品製造の現場では、安定状態になるまで待ってから計量値を確定する、という運用が一般的です。
 
-//emlist{
+//emlistnum{
 [14:24:05.100][NOTIFY] RX: 03 CA 00 64 00 00 A9 → 10.0g (unstable)
 [14:24:05.200][NOTIFY] RX: 03 CA 00 65 00 00 A8 → 10.1g (unstable)
 [14:24:05.300][NOTIFY] RX: 03 CA 00 64 00 00 A9 → 10.0g (unstable)
@@ -174,11 +190,11 @@ FFF4	Notify	重量データのストリーミング（はかり → スマホ）
 
 === ステップ5：風袋引き（Tare）によるWrite操作
 
-Notifyがペリフェラルからセントラルへの方向だったのに対し、Writeはセントラルからペリフェラルへの方向です。電子はかりの場合、風袋引き（重量のゼロリセット）の指示をWriteで送ります。
+Notifyがペリフェラルからセントラルへの方向だったのに対し、Writeはセントラルからペリフェラルへの方向です。電子はかりの場合、風袋引き（ふうたいびき）の指示をWriteで送ります。
 
 風袋引きとは、容器の重量を差し引いて中身だけの重量を測るための操作です。たとえば、植物の鉢ごとの重量を測った後に風袋引きを行えば、次に水を注いだ時に「水の量」だけを正確に計れます。
 
-//emlist{
+//emlistnum{
 [14:24:12.345][WRITE] TX: 03 0F 00 00 00 01 0E → 36F5 (Tare)
 [14:24:12.456][WRITE] Success on 36F5
 [14:24:12.500][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
@@ -205,7 +221,7 @@ Notifyがペリフェラルからセントラルへの方向だったのに対�
 
 ここまで読むと複雑に感じるかもしれませんが、実際のKotlinコードでは、AndroidのBLE APIがこれらの手順を大部分隠蔽してくれます。たとえば、スキャンからNotifyの受信開始までは、おおむね次のような流れになります。
 
-//emlist{
+//emlistnum{
 // 1. スキャン：デバイス名でフィルタリングして探す
 val filter = ScanFilter.Builder().setDeviceName("Decent Scale").build()
 bluetoothLeScanner.startScan(listOf(filter), scanSettings, scanCallback)
@@ -240,16 +256,20 @@ gatt.writeDescriptor(descriptor)
 使用するのはスター精密のSM-S210iです。主に業務用として設計されたモデルですが、2026年4月時点でAmazonからも購入できます。感熱紙も一般的な規格の58mmロール紙で、モノタロウやアスクルなどの通販サイトで手に入ります。
 
 TODO: プリンターの写真
+TODO: 価格、入手先、メーカー
 
 === SDKによるBluetooth Classicの隠蔽
 
 電子はかりとの通信では、BLE APIを直接操作し、GATT接続からNotifyのサブスクライブまですべてのステップをアプリ側で制御しました。しかし、モバイルプリンターとの通信はまったく様相が異なります。
 
-スター精密はStarXpand SDKというKotlin/Swift向けのSDKを提供しており、開発者はこのSDKを通じてプリンターを操作します。第2章で説明したように、この製品はBluetooth ClassicのSPP（Serial Port Profile）を内部的に使っていますが、SDKがその詳細をすべて隠蔽しています。
+スター精密はStarXpand SDKというKotlin/Swift向けのSDKを提供しており@<fn>{starxpand_github}、開発者はこのSDKを通じてプリンターを操作します。
+第2章で説明したように、この製品はBluetooth ClassicのSPP（Serial Port Profile）を内部的に使っていますが、SDKがその詳細をすべて隠蔽しています。
+
+//footnote[starxpand_github][StarXpand SDK for Androidのソースコードは@<href>{https://github.com/star-micronics/StarXpand-SDK-Android}で公開されています。iOS版も同じく@<href>{https://github.com/star-micronics/StarXpand-SDK-iOS}から入手できます。]
 
 以下はプリンターの発見から印刷までのログです。
 
-//emlist{
+//emlistnum{
 [14:25:01.001] > Searching for printers...
 [14:25:03.234] > Found device: SM-S210i
 [14:25:05.456] > Discovery finished
@@ -284,7 +304,7 @@ Bluetooth Classicのペアリング、チャンネルの確立、エラーハン
 
 印刷時のコードを見てみましょう。StarXpand SDKではビルダーパターンでコマンドを組み立てます。
 
-//emlist{
+//emlistnum{
 [14:25:10.001] > Printing: "植物の生育記録"
 [14:25:10.002] > Opening printer...
 [14:25:11.234] > Sending print command...
@@ -296,21 +316,20 @@ Bluetooth Classicのペアリング、チャンネルの確立、エラーハン
 
  * 親機（スマートフォン）を変更した際に、前の親機との接続解除を忘れるリスクを防ぐ
  * プリンターのバッテリー消費を抑える
- * Bluetooth Classicは接続数の上限が厳しいため、不要な接続を保持しない
 
-=== BLEとBluetooth Classicの開発体験の違い
+#@# === BLEとBluetooth Classicの開発体験の違い
 
-電子はかりとモバイルプリンターの開発を通じて、BLEとBluetooth Classicの開発体験の違いが見えてきました。
+#@# 電子はかりとモバイルプリンターの開発を通じて、BLEとBluetooth Classicの開発体験の違いが見えてきました。
 
-//table[dev_experience][BLEとBluetooth Classicの開発体験の比較]{
-項目	電子はかり（BLE）	モバイルプリンター（Classic）
----------------------------------------------------------
-使用API	Android BLE API（直接操作）	StarXpand SDK（抽象化）
-通信の可視性	高い（UUIDやデータが全て見える）	低い（SDKが隠蔽）
-ペアリング	不要	必要（事前にOS設定で実施）
-接続方式	ペアリングなしで直接接続	ペアリング後にSPP接続
-デバッグ	ログで各段階を追跡可能	SDK側のエラーメッセージに依存
-//}
+#@# //table[dev_experience][BLEとBluetooth Classicの開発体験の比較]{
+#@# 項目	電子はかり（BLE）	モバイルプリンター（Classic）
+#@# ---------------------------------------------------------
+#@# 使用API	Android BLE API（直接操作）	StarXpand SDK（抽象化）
+#@# 通信の可視性	高い（UUIDやデータが全て見える）	低い（SDKが隠蔽）
+#@# ペアリング	不要	必要（事前にOS設定で実施）
+#@# 接続方式	ペアリングなしで直接接続	ペアリング後にSPP接続
+#@# デバッグ	ログで各段階を追跡可能	SDK側のエラーメッセージに依存
+#@# //}
 
 BLEはプロトコルが標準化されており、Android APIで直接操作できるため、通信の各段階を細かく制御・観察できます。一方、Bluetooth ClassicはSDKが提供されている場合、通信の詳細は隠蔽されますが、その分、開発者は印刷ロジックに集中できます。
 
@@ -325,9 +344,13 @@ BLEはプロトコルが標準化されており、Android APIで直接操作で
 
 === 製品紹介：電子ペーパータグ
 
-最後に紹介するのは電子ペーパータグです。正確にはGiciskyが販売する2.9インチの小型電子ペーパーディスプレイで、家電量販店やスーパーマーケットの棚に取り付けられている電子棚札と同じ技術です。
+最後に紹介するのは電子ペーパータグです。
+正確にはGicisky（ギチスキー）が販売する2.9インチの小型電子ペーパーディスプレイで、家電量販店やスーパーマーケットの棚に取り付けられている電子棚札と同じ技術を使用しています。
 
 電子ペーパーの最大の特徴は省電力性です。表示の書き換え時にのみ電力を消費し、表示を維持すること自体には電力を必要としません。そのため、バッテリー1つで数年間の運用が可能です。Kindle Paperwhiteのような電子書籍リーダーにも使われているこの技術は、近年ではインテリア用の大型ディスプレイとしても一般消費者に浸透しています。
+
+TODO: 写真
+TODO: 価格、入手先、メーカー
 
 === 構成：Android → ESP32 → 電子ペーパー
 
@@ -357,7 +380,7 @@ Wi-Fi経由でHTTPリクエストを受け付けます。
 
 通信の流れをログで確認します。
 
-//emlist{
+//emlistnum{
 [14:26:01.001] > Connecting to AP...
 [14:26:01.002] > URL: http://192.168.1.100/imgupload
 [14:26:01.003] > POST /imgupload
