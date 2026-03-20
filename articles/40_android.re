@@ -21,25 +21,13 @@ TODO: Android Studio公式ダウンロードページのキャプチャ（対応
 
 さらに言えば、Android開発は必ずしもAndroid Studioでなければならないわけでもありません。ビルドシステムであるGradleとAndroid SDKはAndroid Studioとは独立したツールなので、VSCodeとコマンドラインだけでもアプリをビルドして実機にインストールすることは可能です。FlutterやReact NativeによるAndroid開発では、むしろVSCodeの方が主流のエディタです。
 
-「Android StudioじゃなくてCursorやClineを使いたい」という声も聞こえてきそうです。AIアシスタントが統合された開発環境に慣れていると、それなしのIDEに戻るのは抵抗があるかもしれません。実際、CursorでKotlinのコードを編集し、ビルドと実行はAndroid Studioで行うという「デュアルIDE」のワークフローを実践している開発者もいます。ただし、Kotlin LSP（言語サーバー）はAndroidの複雑なGradleプロジェクトへの対応がまだ十分ではなく、Cursor単体でAndroid開発を完結させるのは現時点では難しいのが実情です。
-
-なお、Android Studio自体もAI支援の方向に進化しています。GoogleのGeminiが統合されており、コード補完やチャットに加え、Agent Modeではマルチファイルのリファクタリングやテスト生成を自然言語で指示できます。ワイヤーフレームの画像からComposeのコードを生成する機能まであり、「Android開発に特化したAI支援」として独自の立ち位置を築きつつあります。
-
-そして、本書で使うClaude CodeもAndroid Studioの中で動かせます。方法は2つあり、併用するのが効果的です。
-
-1つ目は、Android Studio下部のTerminalタブで@<tt>{claude}コマンドを実行する方法です。プロジェクトのルートディレクトリがそのまま作業ディレクトリになるので、Claude Codeはプロジェクト構造を即座に把握できます。Gradleのビルドコマンドも同じターミナルから実行可能です。新しい機能をまるごと追加したり、複数ファイルにまたがるリファクタリングを指示したりと、プロジェクト全体を見渡す大きな作業に向いています。
-
-TODO: Android StudioのTerminalタブでClaude Codeを起動した画面のキャプチャ
-
-2つ目は、JetBrains MarketplaceからインストールできるClaude Codeプラグインです。こちらはCursorやGitHub Copilotに近い「エディタ補助型」のツールで、今開いているファイルや選択中のコードに対する修正提案、IDE上での差分表示とワンクリックでの適用、ショートカットキーでの呼び出しといった機能が使えます。ターミナルに移動せずに済むので、開発フローの中断が少ないのが利点です。
-
-TODO: Claude Codeプラグインの差分ビュー（Accept/Rejectボタンが見える状態）のキャプチャ
-
-つまり、大きな方針はターミナル版のClaude Codeに任せ、手元のコードの微調整はプラグイン版で素早くこなす。そしてComposeプレビューや実機確認はAndroid Studioの本来の機能で行う。すべてがAndroid Studioの1つのウィンドウの中で完結します。CursorとAndroid Studioを行き来するデュアルIDE運用に比べると、コンテキストスイッチが少ないのが大きな強みです。次章で、このワークフローの実際を詳しく見ていきます。
-
 === バージョンの話
 
-本書の執筆時点（2026年3月）での安定版はAndroid Studio Panda 2です。Android Studioのバージョン名は動物の名前がアルファベット順に付けられており、過去にはGiraffe、Hedgehog、Iguana、Jellyfish、Koala、Ladybug、Meerkatなどがありました。本書のスクリーンショットはPanda 2に基づいていますが、基本的な操作は多少バージョンが違っても大きく変わりません。
+本書の執筆時点（2026年3月）での安定版はAndroid Studio Panda 2です。Android Studioのバージョン名は動物の名前がアルファベット順に付けられており、過去には@<b>{G}iraffe、@<b>{H}edgehog、@<b>{I}guana、@<b>{J}ellyfish、@<b>{K}oala、@<b>{L}adybug、@<b>{M}eerkatなどがありました。本書のスクリーンショットはPanda 2に基づいていますが、基本的な操作は多少バージョンが違っても大きく変わりません。
+
+ちなみに、Android OS自体にもアルファベット順のコードネームがあり、こちらはお菓子の名前でした@<fn>{android_codename}。Cupcake（1.5）、Donut（1.6）、Eclair（2.0）、KitKat（4.4）、Lollipop（5.0）、Oreo（8.0）、Pie（9.0）といった具合です。Android 10以降、公式にはお菓子のコードネームは使われなくなりましたが、内部的には続いているとされています。Android OSはお菓子、Android Studioは動物と、命名体系が別である点は紛らわしいので覚えておくとよいでしょう。
+
+//footnote[android_codename][Android 10以降の内部コードネームとして、Q: Quince Tart、R: Red Velvet Cake、S: Snow Cone、T: Tiramisu、U: Upside Down Cake、V: Vanilla Ice Creamなどが知られています。]
 
 === インストール手順
 
@@ -60,9 +48,6 @@ TODO: Android Studioウェルカム画面のキャプチャ（New Projectボタ�
 
 TODO: テンプレート選択画面のキャプチャ（Empty ActivityとEmpty Views Activityが両方見える状態）
 
-かつて、ここには「Empty Activity」と「Empty Compose Activity」の2つがありました。前者はXMLレイアウト、後者はJetpack Composeを使うテンプレートです。しかし現在は、Empty ActivityがデフォルトでJetpack Composeを使う構成になっています。XMLレイアウトは「Empty Views Activity」として別に用意されるようになりました。
-
-この変化自体が、AndroidのUI開発がどちらに向かっているかを端的に示しています。
 
 === プロジェクトの設定
 
@@ -73,8 +58,8 @@ TODO: プロジェクト設定画面のキャプチャ（Name、Package name、M
 //table[project_settings][プロジェクト作成時の設定例]{
 項目	説明	本書での設定例
 ---------------------------------------------------------
-Name	アプリの表示名	HydroLog
-Package name	アプリの一意な識別子	com.example.hydrolog
+Name	アプリの表示名	SampleApp
+Package name	アプリの一意な識別子	com.sample.app
 Save location	プロジェクトの保存先	任意
 Minimum SDK	サポートする最低Androidバージョン	API 26（Android 8.0）
 Build configuration language	ビルドスクリプトの言語	Kotlin DSL
@@ -84,7 +69,9 @@ Minimum SDKの設定は少し考えどころです。低く設定すれば多く
 
 === 生成されるファイル
 
-「Finish」を押すと、プロジェクトが生成されます。初回はGradleの同期が走るので少し待ちましょう。
+「Finish」を押すと、プロジェクトが生成されます。初回はGradle@<fn>{gradle}の同期が走るので少し待ちましょう。
+
+//footnote[gradle][GradleはAndroid開発で標準的に使われるビルドツールです。ソースコードのコンパイル、ライブラリの依存関係の解決、APK（インストール用ファイル）の生成などを自動で行います。Android Studio上では意識せずとも裏で動いていますが、ライブラリの追加時などに@<tt>{build.gradle.kts}ファイルを編集する場面が出てきます。]
 
 TODO: プロジェクト生成直後のAndroid Studio画面のキャプチャ（MainActivity.ktが開かれ、左側にプロジェクトツリーが見える状態）
 
@@ -117,7 +104,8 @@ Android Studioにはエミュレータ（仮想デバイス）が付属してい
 
 TODO: Device Manager画面のキャプチャ（仮想デバイス一覧が見える状態）
 
-エミュレータのイメージを初めてダウンロードする際にはそれなりの容量（数GB）が必要です。また、エミュレータの動作にはPCのメモリとCPUをかなり使います。開発マシンのRAMが8GB未満だと動作が重くなる可能性があります。
+エミュレータのイメージを初めてダウンロードする際にはそれなりの容量（数GB）が必要です。また、エミュレータの動作にはPCのメモリとCPUをかなり使います。
+開発マシンのRAMが8GB未満だと動作が重くなりかなり厳しい開発体験になると思います。
 
 === 実行
 
@@ -135,12 +123,12 @@ Androidの実機テストはシンプルです。端末の「設定」から「�
 
 TODO: デバイス選択ドロップダウンに実機の端末名が表示されている状態のキャプチャ
 
-ここでもiOSとの違いが出ます。iOSの場合、実機テストにはApple Developer Programへの登録（個人利用なら無料のApple IDでも可能ですが、制約があります）やプロビジョニングプロファイルの設定が必要です。Androidにはそうした手続きがなく、ケーブルを繋いですぐにテストできます。ただし、Google Play Storeへのアプリ公開にはGoogle Playデベロッパーアカウント（登録料$25、一回のみ）が必要です。
+ここでもiOSとの違いが出ます。iOSの場合、実機テストにはApple Developer Programへの登録（個人利用なら無料のApple IDでも可能ですが、制約があります）やプロビジョニングプロファイルの設定が必要です。Androidにはそうした手続きがなく、ケーブルを繋いですぐにテストできます。ただし、Google Play Storeへのアプリ公開にはGoogle Playデベロッパーアカウント（登録料$25、一回のみ）が必要です。iOSのApp Storeへの公開にはApple Developer Programへの有料登録（年額$99、つまり毎年更新が必要）がかかるため、個人開発者にとってはAndroidの方がコスト面でのハードルが低いといえます。
 
 
 == Jetpack Composeによる宣言的UI
 
-テンプレートで生成された@<tt>{MainActivity.kt}を開くと、見慣れないコードが目に入るかもしれません。
+テンプレートで生成された@<tt>{MainActivity.kt}を開きましょう。
 
 //emlist{
 class MainActivity : ComponentActivity() {
@@ -186,9 +174,16 @@ Jetpack Composeは「宣言的UI」のフレームワークです。
 
 たとえば、名前の一覧を表示したいとします。
 
-命令的アプローチ（従来のXML + Kotlin）では、こう考えます。「まずRecyclerViewを配置して、Adapterクラスを作り、ViewHolderを定義して、onBindViewHolderでデータをビューにバインドして...」。手順を逐一指示する料理レシピのようなものです。
+命令的アプローチ（従来のXML + Kotlin）では、こう考えます。「まずRecyclerViewを配置して、Adapterクラスを作り、ViewHolderを定義して、onBindViewHolderでデータをビューにバインドして...」。手順を逐一指示する料理レシピのようなものです。実際のコードでは、この「名前の一覧を表示する」だけのために以下のファイルが必要になります。
 
-宣言的アプローチ（Compose）では、こう書きます。
+ * @<tt>{activity_main.xml}：RecyclerViewを配置するレイアウトファイル
+ * @<tt>{item_name.xml}：リストの1行分のレイアウトファイル
+ * @<tt>{NameAdapter.kt}：RecyclerView.Adapterのサブクラス（ViewHolderの定義、データのバインド処理を含む）
+ * @<tt>{MainActivity.kt}：Adapterの生成、RecyclerViewへのセット、LayoutManagerの指定
+
+最低4ファイル、合計で60〜80行ほどのコードになります。XMLとKotlinを行き来しながら、それぞれの整合性を自分で保つ必要があります。
+
+宣言的アプローチ（Compose）では、同じことがこれだけで済みます。
 
 //emlist{
 @Composable
@@ -201,9 +196,13 @@ fun NameList(names: List<String>) {
 }
 //}
 
-「名前のリストがあるので、それぞれをTextとして縦に並べて」。完成形を宣言しているだけです。リストの生成や更新のタイミングはフレームワークが面倒を見てくれます。
+1ファイル、8行。「名前のリストがあるので、それぞれをTextとして縦に並べて」と完成形を宣言しているだけです。リストの生成や更新のタイミングはフレームワークが面倒を見てくれます。実際にメルカリは、既存のAndroidアプリをJetpack Composeで書き換えた結果、全体の69%にあたる35万5000行のコードを削減したと報告しています@<fn>{mercari_compose}。
 
-この「宣言的UI」というパラダイムは、Androidに限った動きではありません。iOSではSwiftUI（2019年発表）、WebではReact（2013年）やFlutter（2018年）など、プラットフォームを問わず同じ方向に進化しています。「UIの状態管理はフレームワークに任せて、開発者は見た目の定義に集中する」という考え方が、業界全体のトレンドになっています。
+//footnote[mercari_compose][@<href>{https://android-developers-jp.googleblog.com/2023/04/mercari-reduces-lines-of-code-by-rebuilding-with-jetpack-compose.html}]
+
+この「宣言的UI」という考え方は、Androidに限った動きではありません。iOSではSwiftUI（2019年発表）、WebではReact（2013年）やFlutter（2018年）など、プラットフォームを問わず同じ方向に進化しています。「UIの状態管理はフレームワークに任せて、開発者は見た目の定義に集中する」という考え方が、業界全体のトレンドになっています。
+
+
 
 === Composable関数
 
@@ -267,7 +266,7 @@ TODO: Android Studioのエディタ右側にComposeプレビューが表示さ�
 
 === Jetpack ComposeとSwiftUI
 
-ここまで読んで、iOSのSwiftUIに似ていると感じた方もいるかもしれません。実際、両者は驚くほど似ています。
+ここまで読んで、iOSの開発経験のある方であればSwiftUIに似ていると感じた方もいるかもしれません。実際、両者は驚くほど似ています。
 
 どちらも宣言的UIフレームワークであり、状態管理の考え方も近く、コードの見た目すら似通っています。Composeは@<tt>{Column}と@<tt>{Row}でレイアウトし、SwiftUIは@<tt>{VStack}と@<tt>{HStack}でレイアウトする。Composeは@<tt>{remember}で状態を保持し、SwiftUIは@<tt>{@State}で状態を保持する。
 
@@ -282,7 +281,7 @@ TODO: Android Studioのエディタ右側にComposeプレビューが表示さ�
 
 === なぜアーキテクチャが必要なのか
 
-小さなアプリであれば、1つのファイルにすべてのコードを書いても動きます。しかし、本書のアプリのように「BLEでセンサーデータを受信し、画面に表示し、データベースに保存し、プリンターに送信する」といった処理が絡み合うと、コードの見通しが急速に悪くなります。
+小さなアプリであれば、1つのファイルにすべてのコードを書いても動きます。しかし、本書のアプリのように「BLEでセンサーデータを受信し、電子ペーパーに表示し、データベースに保存し、プリンターに送信する」といった処理が絡み合うと、コードの見通しが急速に悪くなります。
 
 画面の表示ロジックと通信処理とデータ保存が1つのファイルに混在していると、「はかりの値を表示するコードを修正したいのに、プリンターの接続処理が邪魔で見つからない」という事態になります。コードの修正がどこに影響するかも予測しづらくなります。
 
@@ -304,11 +303,11 @@ Model	データの取得・保存	Repository、Room Database
 
 @<b>{ViewModel}は、ViewとModelの間に立って、UIに必要な状態を管理します。「はかりから受信した生のバイト列を、画面に表示できる形式に変換する」「ユーザーが収穫ボタンを押したら、データベースに保存する指示を出す」。Viewが直接Modelにアクセスすることはなく、必ずViewModelを経由します。
 
-@<b>{Model}は、データの実体です。本書ではRoomデータベースへの保存や、BLEデバイスとの通信クライアントがここに該当します。
+@<b>{Model}は、データの取得・保存を担う層です。本書ではRoomデータベースへの栽培データの保存（ローカルデータソース）や、BLEデバイスとの通信クライアント（リモートデータソース）がここに該当します。通信クライアントは前章で登場した@<tt>{ScaleClient}のように、外部デバイスからデータを受け取る入り口です。「保存する先」だけでなく「データを取ってくる元」もModel層に含まれます。
 
 === 単方向データフロー
 
-MVVMで重要なのは、データの流れが一方向であることです。
+MVVMで重要なのは、データの流れが一方向（単方向）であることです。対義語は双方向データバインディングで、ViewとModelが直接お互いを更新し合う方式です。かつてはAndroidのData Binding LibraryやWebのAngularJSなど、双方向バインディングを採用するフレームワークが主流でした。しかし、アプリが複雑になると「どちらが先にデータを変更したのか」が追いにくくなり、バグの原因特定が困難になるという課題がありました。現在ではJetpack Compose（Android）、SwiftUI（iOS）、React（Web）のいずれも単方向データフローを推奨しており、業界全体の設計指針として定着しています。
 
 //emlist{
 ユーザー操作 → View → ViewModel → Model
@@ -338,11 +337,11 @@ ViewModelがこの@<tt>{UiState}を更新し、Viewがそれを観察（collect�
 
 === ディレクトリ構造
 
-本書のアプリのディレクトリ構造を見てみましょう。
+本書で作成する植物栽培管理アプリのディレクトリ構造を見てみましょう。
 
 //emlist{
 app/src/
-├── main/java/com/example/hydrolog/    ← アプリ本体のコード
+├── main/java/com/sample/app/    ← アプリ本体のコード
 │   ├── ui/
 │   │   ├── home/
 │   │   │   ├── HomeScreen.kt
@@ -366,10 +365,10 @@ app/src/
 │   │   ├── ScaleClient.kt
 │   │   └── PrinterClient.kt
 │   └── MainActivity.kt
-├── test/java/com/example/hydrolog/    ← 単体テスト（JVM上で実行）
+├── test/java/com/sample/app/    ← 単体テスト（JVM上で実行）
 │   └── ui/scale/
 │       └── ScaleViewModelTest.kt
-└── androidTest/java/com/example/hydrolog/  ← UIテスト（エミュレータ/実機で実行）
+└── androidTest/java/com/sample/app/  ← UIテスト（エミュレータ/実機で実行）
     └── ui/scale/
         └── ScaleScreenTest.kt
 //}
@@ -441,7 +440,10 @@ class ScaleViewModelTest {
     @Test
     fun `parseWeightData returns correct weight`() {
         val viewModel = ScaleViewModel()
-        val rawData = byteArrayOf(0x03, 0xCE.toByte(), 0x00, 0x64, 0x00, 0x00, 0xAD.toByte())
+        val rawData = byteArrayOf(
+            0x03, 0xCE.toByte(), 0x00,
+            0x64, 0x00, 0x00, 0xAD.toByte()
+        )
 
         val result = viewModel.parseWeightData(rawData)
 
@@ -496,4 +498,4 @@ TODO: ScaleScreenPreview_ConnectedとScaleScreenPreview_Disconnectedのプレビ
 
 一方で、宣言的UIへの移行はiOSのSwiftUIとまったく同じ方向を向いており、プラットフォームが違っても「良いUI開発とは何か」についての答えは収斂しつつあることもわかりました。
 
-次章では、これらの基礎知識を前提に、Claude Codeを使ってアプリの実装を進めていきます。
+次章では、これらの基礎知識を前提に、AIを活用して使ってアプリの実装を進めていきます。
