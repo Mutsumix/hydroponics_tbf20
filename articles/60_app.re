@@ -9,7 +9,7 @@ acorn
 具体的な種類で言うと、サニーレタス、キャベツ、バジル、ルッコラなどを育てています。
 栽培方法にもこだわりがあり、土を使わず、液体肥料とLEDの光だけで育てる水耕栽培にこだわっています。
 
-TODO: ここに水耕栽培の写真を貼り付ける
+//image[hydroponics][筆者の水耕栽培環境][scale=0.5]
 
 水耕栽培についてのこだわりを書き始めると本一冊ではとても足りません。
 というか、これまでに水耕栽培についての技術同人誌を3冊書いてきました。
@@ -30,9 +30,15 @@ TODO: ここに水耕栽培の写真を貼り付ける
 そうです、ここまでの内容は全てこのアプリ作成のための壮大な前振りだったのです。
 
 本書で作成したアプリのリポジトリは以下になります。
-TODO: @<href>{https://github.com/mutsumix/sodatter-bt}
-また、実際にPlay Storeに公開したアプリは以下になります。
-TODO: @<href>{https://play.google.com/store/apps/details?id=com.mutsumix.sodatterbt}
+@<href>{https://github.com/Mutsumix/sodatter-bt}
+
+また、実際にPlay Storeに公開したアプリがこちらになります。@<fn>{playstore}
+//image[store][Google Playストアにおけるアプリの掲載画面][scale=0.5]
+//footnote[playstore][@<href>{https://play.google.com/store/apps/details?id=com.mutsumix.sodatterbt}]
+
+
+
+
 
 === 植物栽培における面倒を解消するアイディアの数々
 
@@ -94,7 +100,6 @@ Readdy@<fn>{readdy}は、シンガポールのINTERACTIVE LINK PTE. LTD.が開�
 Readdyでデザイン案を先に作り、そこで生成された画面デザインを含むコードをClaudeCodeに参照させ再現させるという手法で開発を進めています。
 このツール特徴として、画面デザインを生成するだけでなく、Reactベースのコードも生成してくれるので、それをClaudeCodeが参照できるデザイン資料として渡すことができます。
 
-
 //footnote[readdy][@<href>{https://readdy.ai/}]
 
 そのやり方の利点として、Figmaなどのデザインツールで作成したキャプチャを渡すよりも、画面遷移をともなう、より誤解の少ないデザイン指示を与えることができます。
@@ -109,8 +114,6 @@ MCPを使う手段もありますが、トークン消費が多くなるため�
 触ってみましたが、かなり出来が良く「あ、こっちのツールを紹介した方が良かったかも」という気持ちを抱えながらこの原稿を書いています。
 
 //footnote[stitch][@<href>{https://blog.google/technology/google-labs/stitch-gemini-3}]
-
-
 
 ReaddyにUIデザインを考えてもらうためにもプロンプトが必要なので、そのための文章も、Claudeに考えてもらいました。
 こちらも内容はGitHubに上げていますので、興味のある方はリポジトリをご覧ください。
