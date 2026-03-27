@@ -116,13 +116,14 @@ MCPを使う手段もありますが、トークン消費が多くなるため�
 //footnote[stitch][@<href>{https://blog.google/technology/google-labs/stitch-gemini-3}]
 
 ReaddyにUIデザインを考えてもらうためにもプロンプトが必要なので、そのための文章も、Claudeに考えてもらいました。
-こちらも内容はGitHubに上げていますので、興味のある方はリポジトリをご覧ください。
+こちらも内容はGitHubに上げていますので、興味のある方はリポジトリをご覧ください。@<fn>{readdy_prompts}
 作成時のコツですが、１画面ずつ作成するようにプロンプトを投げると良いでしょう。
-TODO: プロンプト
+//footnote[readdy_prompts][プロンプト全文 @<href>{https://github.com/Mutsumix/sodatter-bt/blob/main/specs/READDY_PROMPTS.md}]
 
 結果としてこのような画面が作成されました。
 もし違和感があれば、場所を示して修正してもらったり、ピンポイントで直接修正することも可能です。
 
+//image[readdy][Readdyで作成したデザイン案][scale=0.75]
 
 内容に問題がなければ、Reactコードの形式でエクスポートします。@<fn>{readdy_export}
 

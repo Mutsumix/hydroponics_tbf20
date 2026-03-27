@@ -158,9 +158,7 @@ PlanモードとWorktreeは、この順番で使うことに意味がありま�
 
 ワイヤーフレームやUIデザインは、Claude Codeの得意分野ではありません。
 
-筆者はReaddyというAIサービスでデザイン案を先に作り、そのReactコードをClaude Codeに参照させながらJetpack Composeへ変換する、という流れを取りました。
-
-//image[readdy][Readdyで作成したデザイン案][scale=0.75]
+次の章で詳述しますが、筆者はReaddyというAIサービスでデザイン案を先に作り、そのReactコードをClaude Codeに参照させながらJetpack Composeへ変換する、という流れを取りました。
 
 「Claude Codeに全部任せる」のではなく、得意・不得意を見極めて適切なツールに割り振る。これもAIエージェント活用の重要な判断です。
 
