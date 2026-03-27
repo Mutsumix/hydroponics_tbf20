@@ -125,9 +125,11 @@ Android Studioにはエミュレータ（仮想デバイス）が付属してい
 
 本書では最終的にBluetooth機器と接続するため、実機での動作確認が不可欠です。エミュレータにはBluetooth機能がないからです。
 
-Androidの実機テストはシンプルです。端末の「設定」から「開発者向けオプション」を有効にし、「USBデバッグ」をオンにして、USBケーブルでPCに接続します。Android Studioのデバイス選択に端末名が表示されたら、あとはエミュレータと同じようにRunボタンを押すだけです。
+Androidの実機テストはシンプルです。
+端末の「設定」から「開発者向けオプション」を有効にし、「USBデバッグ」をオンにして、USBケーブルでPCに接続します。
+Android Studioのデバイス選択に端末名が表示されたら、あとはエミュレータと同じようにRunボタンを押すだけです。
 
-TODO: デバイス選択ドロップダウンに実機の端末名が表示されている状態のキャプチャ
+//image[running-devices][デバイス選択ドロップダウンに実機が表示されている状態][scale=0.75]
 
 ここでもiOSとの違いが出ます。iOSの場合、実機テストにはApple Developer Programへの登録（個人利用なら無料のApple IDでも可能ですが、制約があります）やプロビジョニングプロファイルの設定が必要です。Androidにはそうした手続きがなく、ケーブルを繋いですぐにテストできます。ただし、Google Play Storeへのアプリ公開にはGoogle Playデベロッパーアカウント（登録料$25、一回のみ）が必要です。iOSのApp Storeへの公開にはApple Developer Programへの有料登録（年額$99、つまり毎年更新が必要）がかかるため、個人開発者にとってはAndroidの方がコスト面でのハードルが低いといえます。
 
@@ -446,7 +448,9 @@ UIテスト	エミュレータまたは実機	遅い	画面の表示と操作
 
 === 単体テスト
 
-ViewModelのロジックをテストするには、@<tt>{test/}ディレクトリに通常のKotlinのテストを書きます。先ほどのディレクトリ構造で見たように、テストファイルは@<tt>{app/src/test/}以下に、テスト対象と同じパッケージ構造で配置します。
+ViewModelのロジックをテストするには、@<tt>{app/src/test/}ディレクトリに通常のKotlinのテストを書きます。テストファイルの配置は、テスト対象と同じパッケージ構造を@<tt>{test/}側にも再現する@<b>{ミラーパッケージ構造}（Mirror Package Structure）が標準です。たとえば@<tt>{ui/harvest/HarvestViewModel.kt}のテストは、@<tt>{test/.../ui/harvest/HarvestViewModelTest.kt}に置きます。
+
+JavaScript/TypeScriptの世界では、ソースファイルと同じディレクトリにテストを並べる@<b>{コロケーション}（Co-location）が主流ですが、Android/Gradleでは@<tt>{src/main/}・@<tt>{src/test/}・@<tt>{src/androidTest/}というソースセットの分離が前提なので、ミラー構造が自然な選択になります。
 
 //emlist{
 class ScaleViewModelTest {
