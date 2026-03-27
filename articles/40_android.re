@@ -15,7 +15,7 @@ Android Studioは、Googleが公式に提供しているAndroidアプリ開発�
 
 ダウンロードは公式サイト（https://developer.android.com/studio）から行えます。Windows、macOS、Linux、ChromeOSに対応しています。第1章で「え、Android開発ってMacでできるの？」と驚いた話を書きましたが、逆に言えばWindowsでもLinuxでも問題なく開発できるということです。
 
-TODO: Android Studio公式ダウンロードページのキャプチャ（対応OS一覧が見える状態）
+//image[android-download-shadow][Android Studio公式ダウンロードページ][scale=0.75]
 
 ここでiOS開発と比較してみましょう。iOSアプリの開発にはXcodeが必要で、XcodeはmacOSでしか動作しません。つまりiOSアプリを作りたければ、Macを買うところから始まります。Androidにはそうした制約がありません。これは第1章で触れた「オープンなプラットフォーム」という思想が、開発環境にも一貫して現れているところです。
 
@@ -35,45 +35,44 @@ TODO: Android Studio公式ダウンロードページのキャプチャ（対応
 
 初回起動時にAndroid SDKやエミュレータのイメージのダウンロードが始まります。ここでそれなりの時間がかかるので、安定したネットワーク環境で作業することをおすすめします。
 
-
 == プロジェクトの作成
 
 Android Studioを起動すると、ウェルカム画面が表示されます。「New Project」を選択してプロジェクトを作成しましょう。
 
-TODO: Android Studioウェルカム画面のキャプチャ（New Projectボタンが見える状態）
+//image[welcome][Android Studioウェルカム画面][scale=0.75]
 
 === テンプレートの選択
 
 プロジェクト作成画面では、いくつかのテンプレートが並んでいます。ここで選ぶのは「Empty Activity」です。
 
-TODO: テンプレート選択画面のキャプチャ（Empty ActivityとEmpty Views Activityが両方見える状態）
-
+//image[templates][テンプレート選択画面][scale=0.75]
 
 === プロジェクトの設定
 
 テンプレートを選んだら、いくつかの設定を入力します。
 
-TODO: プロジェクト設定画面のキャプチャ（Name、Package name、Minimum SDKなどの入力欄が見える状態）
+//image[settings][プロジェクト設定画面][scale=0.75]
 
 //table[project_settings][プロジェクト作成時の設定例]{
 項目	説明	本書での設定例
 ---------------------------------------------------------
-Name	アプリの表示名	SampleApp
-Package name	アプリの一意な識別子	com.sample.app
-Save location	プロジェクトの保存先	任意
+Name	アプリの表示名	My Application（任意の名前でOK）
+Package name	アプリの一意な識別子	com.sample.app（任意の名前でOK）
+Save location	プロジェクトの保存先	
 Minimum SDK	サポートする最低Androidバージョン	API 26（Android 8.0）
 Build configuration language	ビルドスクリプトの言語	Kotlin DSL
 //}
 
-Minimum SDKの設定は少し考えどころです。低く設定すれば多くの端末で動作しますが、古いAPIの互換性コードが増えます。高く設定すれば新しいAPIが使えますが、対象端末が減ります。API 26（Android 8.0）を選ぶと、2026年時点で世界のAndroid端末の約95%以上をカバーできます。本書のBLE関連の実装で必要なAPIもこの範囲に収まります。
+Minimum SDKの設定は少し考えどころです。低く設定すれば多くの端末で動作しますが、古いAPIの互換性コードが増えます。高く設定すれば新しいAPIが使えますが、対象端末が減ります。
+API 26（Android 8.0）を選ぶと、2026年時点で世界のAndroid端末の約95%以上をカバーできます。本書のBLE関連の実装で必要なAPIもこの範囲に収まります。
 
 === 生成されるファイル
 
 「Finish」を押すと、プロジェクトが生成されます。初回はGradle@<fn>{gradle}の同期が走るので少し待ちましょう。
 
-//footnote[gradle][GradleはAndroid開発で標準的に使われるビルドツールです。ソースコードのコンパイル、ライブラリの依存関係の解決、APK（インストール用ファイル）の生成などを自動で行います。Android Studio上では意識せずとも裏で動いていますが、ライブラリの追加時などに@<tt>{build.gradle.kts}ファイルを編集する場面が出てきます。]
+//footnote[gradle][Gradleについて解説しますと、Android開発で標準的に使われるビルドツールです。ソースコードのコンパイル、ライブラリの依存関係の解決、APK（インストール用ファイル）の生成などを自動で行います。Android Studio上では意識せずとも裏で動いていますが、ライブラリの追加時などに@<tt>{build.gradle.kts}ファイルを編集する場面が出てきます。]
 
-TODO: プロジェクト生成直後のAndroid Studio画面のキャプチャ（MainActivity.ktが開かれ、左側にプロジェクトツリーが見える状態）
+//image[MainActivity][プロジェクト生成直後のAndroid Studio画面][scale=0.75]
 
 生成されるファイルの中で、最初に目を通すべきものを整理しておきます。
 
@@ -87,22 +86,27 @@ TODO: プロジェクト生成直後のAndroid Studio画面のキャプチャ（
 @<tt>{settings.gradle.kts}	プロジェクト全体の設定
 //}
 
-@<tt>{libs.versions.toml}は比較的新しい仕組みで、以前は@<tt>{build.gradle.kts}に依存関係のバージョンを直接書いていました。ライブラリの数が増えると同じバージョン番号があちこちに散らばって管理が煩雑になるため、バージョンカタログとして一箇所にまとめる方式が推奨されるようになりました。
+@<tt>{libs.versions.toml}は比較的新しい仕組みで、以前は@<tt>{build.gradle.kts}に依存関係のバージョンを直接書いていました。
+ライブラリの数が増えると同じバージョン番号があちこちに散らばって管理が煩雑になるため、
+バージョンカタログとして一箇所にまとめる方式が推奨されるようになりました。
 
 Web開発の経験がある方は、Node.jsの@<tt>{package.json}やPythonの@<tt>{requirements.txt}に近い役割だと思えばイメージしやすいでしょう。
 
 
 == ビルドとエミュレータでの実行
 
-プロジェクトが作成できたら、まずは何も変更せずにビルドして動かしてみましょう。「動くこと」を確認してから手を加えるのが、環境構築のトラブルシューティングを楽にするコツです。
+プロジェクトが作成できたら、まずは何も変更せずにビルドして動かしてみましょう。
+開発の定石ですが、「動くこと」を確認してから手を加えるのが、環境構築のトラブルシューティングを楽にするコツです。
 
 === エミュレータの準備
 
 Android Studioにはエミュレータ（仮想デバイス）が付属しています。実機がなくてもアプリの動作を確認できます。
 
-ツールバーのデバイス選択ドロップダウンから「Device Manager」を開き、仮想デバイスを作成します。機種やAndroidバージョンを選べますが、ここではデフォルトで提案されるものをそのまま使えば十分です。
+ツールバーのデバイス選択ドロップダウンから「Device Manager」を開き、仮想デバイスを作成します。
+機種やAndroidバージョンを選べますが、ここではデフォルトで提案されるものをそのまま使えば十分です。
 
-TODO: Device Manager画面のキャプチャ（仮想デバイス一覧が見える状態）
+//image[devicemng][Tools > Device Managerを開く][scale=0.75]
+//image[devicemng2][Device Manager画面（仮想デバイス一覧）][scale=0.75]
 
 エミュレータのイメージを初めてダウンロードする際にはそれなりの容量（数GB）が必要です。また、エミュレータの動作にはPCのメモリとCPUをかなり使います。
 開発マシンのRAMが8GB未満だと動作が重くなりかなり厳しい開発体験になると思います。
@@ -111,9 +115,11 @@ TODO: Device Manager画面のキャプチャ（仮想デバイス一覧が見え
 
 ツールバーの緑色の再生ボタン（Run）を押すと、ビルドが始まり、成功するとエミュレータが起動してアプリが表示されます。
 
+//image[run][ツールバーのRunボタン][scale=0.75]
+
 テンプレートから生成されたアプリは、画面の中央に「Hello Android!」と表示されるだけのシンプルなものです。しかし、この1行の表示に至るまでに、Kotlinのコンパイル、リソースの処理、APKの生成、エミュレータへのインストールという一連のビルドプロセスが走っています。
 
-TODO: エミュレータで「Hello Android!」が表示されている画面のキャプチャ
+//image[emulator][エミュレータで「Hello Android!」が表示されている画面][scale=0.75]
 
 === 実機での実行
 
@@ -262,7 +268,7 @@ fun GreetingPreview() {
 
 アプリ全体をビルドしてエミュレータで確認する必要がなく、個々のUIパーツを素早く確認・調整できます。第3章で紹介したように、Androidのビルドにはそれなりの時間がかかるため、このプレビュー機能は開発効率に大きく貢献します。
 
-TODO: Android Studioのエディタ右側にComposeプレビューが表示されている画面のキャプチャ（コードとプレビューが左右に並んでいる状態）
+//image[preview][Android Studioのエディタ右側にComposeプレビューが表示されている画面][scale=0.75]
 
 === Jetpack ComposeとSwiftUI
 
@@ -340,37 +346,44 @@ ViewModelがこの@<tt>{UiState}を更新し、Viewがそれを観察（collect�
 本書で作成する植物栽培管理アプリのディレクトリ構造を見てみましょう。
 
 //emlist{
-app/src/
-├── main/java/com/sample/app/    ← アプリ本体のコード
-│   ├── ui/
-│   │   ├── home/
-│   │   │   ├── HomeScreen.kt
-│   │   │   └── HomeViewModel.kt
-│   │   ├── scale/
-│   │   │   ├── ScaleScreen.kt
-│   │   │   ├── ScaleViewModel.kt
-│   │   │   └── ScaleUiState.kt
-│   │   ├── printer/
-│   │   │   ├── PrinterScreen.kt
-│   │   │   └── PrinterViewModel.kt
-│   │   └── navigation/
-│   │       └── NavGraph.kt
-│   ├── data/
-│   │   ├── database/
-│   │   │   ├── AppDatabase.kt
-│   │   │   └── CultivationDao.kt
-│   │   └── model/
-│   │       └── CultivationRecord.kt
-│   ├── bluetooth/
-│   │   ├── ScaleClient.kt
-│   │   └── PrinterClient.kt
-│   └── MainActivity.kt
-├── test/java/com/sample/app/    ← 単体テスト（JVM上で実行）
-│   └── ui/scale/
-│       └── ScaleViewModelTest.kt
-└── androidTest/java/com/sample/app/  ← UIテスト（エミュレータ/実機で実行）
-    └── ui/scale/
-        └── ScaleScreenTest.kt
+app/src/main/java/com/mutsumix/sodatterbt/
+├── ui/                          ← 画面ごとにScreen + ViewModel
+│   ├── home/
+│   │   ├── HomeScreen.kt
+│   │   └── HomeViewModel.kt
+│   ├── harvest/                    （収穫記録）
+│   ├── seeding/                    （播種記録）
+│   ├── detail/                     （栽培詳細）
+│   ├── history/                    （履歴一覧）
+│   ├── labelprint/                 （ラベル印刷）
+│   ├── photorecord/                （写真記録）
+│   ├── qrscan/                     （QRスキャン）
+│   ├── settings/                   （設定）
+│   └── theme/
+│       └── SodatterTheme.kt
+├── data/                        ← Room DB + Repository
+│   ├── db/
+│   │   ├── SodatterDatabase.kt
+│   │   ├── dao/                    （Cultivation / Device / GrowthPhoto...）
+│   │   └── entity/                 （CultivationEntity / DeviceEntity...）
+│   └── repository/
+│       ├── CultivationRepository.kt
+│       └── ...
+├── device/                      ← デバイス通信
+│   ├── scale/
+│   │   └── DecentScaleManager.kt
+│   ├── printer/
+│   │   └── StarPrinterManager.kt
+│   └── epaper/
+│       ├── EpaperApiClient.kt
+│       └── TagImageGenerator.kt
+├── navigation/                  ← 画面遷移
+│   ├── AppNavHost.kt
+│   └── Routes.kt
+├── di/                          ← Hilt DI
+│   └── DatabaseModule.kt
+├── MainActivity.kt
+└── SodatterApplication.kt
 //}
 
 @<tt>{main/}がアプリ本体、@<tt>{test/}が単体テスト、@<tt>{androidTest/}がUIテストです。この3つのディレクトリが並列に存在するのがAndroidプロジェクトの基本構造です。@<tt>{test/}のコードは開発マシンのJVM上で高速に実行され、@<tt>{androidTest/}のコードはエミュレータや実機の上で動きます。
@@ -481,9 +494,9 @@ fun ScaleScreenPreview_Disconnected() {
 }
 //}
 
-接続時と未接続時の画面を並べて確認できます。
+#@# 接続時と未接続時の画面を並べて確認できます。
 
-TODO: ScaleScreenPreview_ConnectedとScaleScreenPreview_Disconnectedのプレビューが上下に並んでいるキャプチャ（異なるUiStateで表示が変わることが視覚的にわかる状態）
+#@# TODO: ScaleScreenPreview_ConnectedとScaleScreenPreview_Disconnectedのプレビューが上下に並んでいるキャプチャ（異なるUiStateで表示が変わることが視覚的にわかる状態）
 
 === テストに深入りしない理由
 
