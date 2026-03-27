@@ -10,12 +10,20 @@
 
 == アプリの概要
 
-TODO: アプリの名称、リンク、ストアのキャプチャ
-
+本章ではこちらのアプリを使って実際のデバイスと通信を行います。
 各端末操作の処理の流れをログを見ながら追っていきます。
-本書執筆のために筆者が作成したものをAndroidのPlay Storeに公開しています。
 
-GitHubにもソースコードを公開しているので、興味のある方は、直接Kotlinのコードを見ることも可能です。
+本書のアプリ「BT Learning Lab」はGoogle Playで公開しています。@<fn>{btlearninglab}
+
+//footnote[btlearninglab][@<href>{https://play.google.com/store/apps/details?id=com.musumix.btlearninglab}]
+
+//image[bt-lab-capture][Google PlayストアにおけるBT Learning Labの掲載画面][scale=0.5]
+
+本書執筆のために筆者が作成したものをAndroidのPlay Storeに公開しました。
+
+GitHubにもソースコードを公開しているので、興味のある方は、直接Kotlinのコードを見ることも可能です。@<fn>{btlab_github}
+
+//footnote[btlab_github][@<href>{https://github.com/Mutsumix/bluetooth-learning-lab-android}]
 
 #@# === 技術スタック
 
@@ -62,8 +70,16 @@ GitHubにもソースコードを公開しているので、興味のある方�
 
 === 製品紹介：Decent Scale
 
-TODO: ここに電子はかりの写真を挿入
-TODO: 価格、入手先、メーカー
+//image[scale1][Half Decent Scale v1.1のパッケージ][scale=0.5]
+//image[scale2][電源を入れた状態のDecent Scale][scale=0.5]
+
+//table[scale_device][購入品一式]{
+品目	個数	購入先	目安の価格
+------------------
+Half Decent Scale v1.1@<fn>{decent_shop}	1つ	Decent Espresso公式サイト	USD $140
+//}
+
+//footnote[decent_shop][@<href>{https://decentespresso.com/decentscale}]
 
 使用するのは、香港のエスプレッソマシンメーカーDecentが製造する電子はかりです。この会社の特徴的な点は、製品の通信仕様をGitHubで公開し、サードパーティからの接続を歓迎していることです@<fn>{decent_github}。BLEのサービスUUID、キャラクタリスティック、データフォーマットがすべてドキュメント化されており@<fn>{decent_api}、3Dモデルまで公開する徹底ぶりです。
 
@@ -255,8 +271,17 @@ gatt.writeDescriptor(descriptor)
 
 使用するのはスター精密のSM-S210iです。主に業務用として設計されたモデルですが、2026年4月時点でAmazonからも購入できます。感熱紙も一般的な規格の58mmロール紙で、モノタロウやアスクルなどの通販サイトで手に入ります。
 
-TODO: プリンターの写真
-TODO: 価格、入手先、メーカー
+//image[printer][スター精密 SM-S210i モバイルプリンター][scale=0.5]
+//table[printer_device][購入品一式]{
+品目	個数	購入先	目安の価格
+------------------
+スター精密 SM-S210i@<fn>{printer_monotaro}	1つ	モノタロウ	¥39,880
+//}
+//footnote[printer_monotaro][@<href>{https://www.monotaro.com/g/06962132/?t.q=sm-s210i}]
+
+基本的に代理店を通して購入することになるのですが、モノタロウでも販売しているのを確認したので、そのリンクを掲載しています。
+もし、実際に購入する場合は、感熱紙ロールも購入する必要があるのでお気をつけください。
+幅が58mmのものであれば、どこが出しているものでも大丈夫です。
 
 === SDKによるBluetooth Classicの隠蔽
 
@@ -345,16 +370,28 @@ BLEはプロトコルが標準化されており、Android APIで直接操作で
 === 製品紹介：電子ペーパータグ
 
 最後に紹介するのは電子ペーパータグです。
-正確にはGicisky（ギチスキー）が販売する2.9インチの小型電子ペーパーディスプレイで、家電量販店やスーパーマーケットの棚に取り付けられている電子棚札と同じ技術を使用しています。
+正確にはGicisky@<fn>{gicisky_name}が販売する2.9インチの小型電子ペーパーディスプレイで、家電量販店やスーパーマーケットの棚に取り付けられている電子棚札と同じ技術を使用しています。
+
+//footnote[gicisky_name][読み方については確定的な情報がないですが、ジシスキーと読む説があるそうです。製造元は深圳のHi-Link Electronics。]
 
 電子ペーパーの最大の特徴は省電力性です。表示の書き換え時にのみ電力を消費し、表示を維持すること自体には電力を必要としません。そのため、バッテリー1つで数年間の運用が可能です。Kindle Paperwhiteのような電子書籍リーダーにも使われているこの技術は、近年ではインテリア用の大型ディスプレイとしても一般消費者に浸透しています。
 
-TODO: 写真
-TODO: 価格、入手先、メーカー
+//image[e-paper][Gicisky 2.9インチ電子ペーパータグ][scale=0.5]
+//table[epaper_device][購入品一式]{
+品目	個数	購入先	目安の価格
+------------------
+Gicisky 2.9インチ 電子ペーパー@<fn>{gicisky_aliexpress}	1つ	AliExpress	¥2,589
+Waveshare ESP32-S3-DEV-KIT-N16R8@<fn>{esp32_aliexpress}	1つ	AliExpress	¥1,842
+//}
+
+//footnote[esp32_aliexpress][@<href>{https://ja.aliexpress.com/item/1005009294795718.html}]
+
+//footnote[gicisky_aliexpress][@<href>{https://ja.aliexpress.com/item/1005002399342939.html} ちなみにこの商品、気に入ったので最近買い足したのですが、黄色も発色できる新型が届きました。本書で使用しているOpenEPaperLinkは、この新型には対応しておらず、おそらくもうこのリンクからの購入はできないと思います。サポートに問い合わせてみたのですが、サイトの仕様にはRed, Blackのみの発色と書かれていますが、すでにそれらの在庫は存在しないと言われました。そのため、本書でESP32からの電子ペーパー制御に興味を持たれたら、OpenEPaperLink対応の別の電子ペーパーのご購入を強くお勧めいたします。]
 
 === 構成：Android → ESP32 → 電子ペーパー
 
 他の2つのデバイスとの大きな違いは、Androidと電子ペーパータグの間に @<b>{中継機（ESP32）} が存在する点です。
+//image[esp32][Waveshare ESP32-S3-DEV-KIT-N16R8][scale=0.5]
 
 //table[epaper_architecture][電子ペーパー通信の構成]{
 区間	通信方式	内容
