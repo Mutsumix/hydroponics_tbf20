@@ -25,7 +25,7 @@
 
 Bluetoothのロゴは、Harald王のイニシャル「H」と「B」をルーン文字（古代北欧で使われていた表音文字）で重ね合わせたものです。
 
-TODO: ここにBluetoothのロゴの写真を挿入
+//image[btlogo][Bluetoothのロゴ(筆者撮影)]
 
 === Bluetooth SIGの設立
 
@@ -77,7 +77,7 @@ Bluetoothは「Wi-Fiほどの速度は必要ないが、赤外線よりも自由
 6.0	2024	Channel Sounding。高精度の距離測定が可能に
 //}
 
-//image[bt_versions.drawio][Bluetoothバージョンの変遷。4.0でのBLE導入が最大の転換点][scale=0.5]
+#@# //image[bt_versions.drawio][Bluetoothバージョンの変遷。4.0でのBLE導入が最大の転換点][scale=0.5]
 
 === Bluetooth ClassicとBLEという2つの世界
 
@@ -121,7 +121,7 @@ Bluetoothで機器同士が通信するには、双方が同じ「取り決め�
 たとえば「音声を送る」「ファイルを転送する」「シリアル通信をエミュレートする」といった用途ごとに、それぞれ異なるプロファイルが定義されています。
 ワイヤレスイヤホン機器のパッケージに「A2DP対応」と書かれているのを見たことがある人もいるでしょう。あれがプロファイル名です。
 
-TODO: ここに「A2DP対応」表記の写真を挿入
+//image[a2dp][ワイヤレスイヤホンのパッケージに記載されたA2DP対応の表記]
 
 === Bluetooth Classicの主なプロファイル
 
@@ -168,7 +168,8 @@ Bluetooth Classicのプロファイルの中で、本書に最も関係が深い
 
 工場の生産ライン、物流倉庫、医療機器などの産業現場では、機器同士のデータ通信にRS-232CやUARTといったシリアル通信が長年使われてきました。はかりやバーコードリーダー、計測器の多くは、今でもシリアルポートでデータを出力します。
 
-TODO: ここにRS-232Cコネクタの写真を挿入
+//image[15pin][RS-232Cでは9ピン、15ピン、25ピンのものがよく知られている][scale=0.5]@<fn>{15pin_credit}
+//footnote[15pin_credit]["X21-15pin-D-Sub-connector-0a" by Adamantios is licensed under CC BY-SA 3.0.]
 
 SPPは、このシリアル通信をBluetooth上でエミュレート（模擬）するプロファイルです。既存のシリアル通信機器を、ソフトウェアの変更を最小限に抑えながら無線化できるため、産業用途で広く浸透しています。RS-232CのケーブルをBluetoothアダプタに置き換えるだけで、既存のシステムがそのまま無線で動く製品も多数存在します。
 
