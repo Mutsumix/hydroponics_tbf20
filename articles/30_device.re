@@ -17,7 +17,7 @@
 
 //footnote[btlearninglab][@<href>{https://play.google.com/store/apps/details?id=com.musumix.btlearninglab}]
 
-//image[bt-lab-capture][Google PlayストアにおけるBT Learning Labの掲載画面][scale=0.5]
+//image[bt-lab-capture-shadow][Google PlayストアにおけるBT Learning Labの掲載画面][scale=0.5]
 
 本書執筆のために筆者が作成したものをAndroidのPlay Storeに公開しました。
 

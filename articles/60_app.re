@@ -1,7 +1,5 @@
 = 植物生育管理アプリの開発
 
-acorn
-
 == なぜこのアプリを作るのか
 
 私は家で植物を育てています。
@@ -35,7 +33,7 @@ acorn
 @<href>{https://github.com/Mutsumix/sodatter-bt}
 
 また、実際にPlay Storeに公開したアプリがこちらになります。@<fn>{playstore}
-//image[store][Google Playストアにおけるアプリの掲載画面][scale=0.5]
+//image[store-shadow][Google Playストアにおけるアプリの掲載画面][scale=0.5]
 //footnote[playstore][@<href>{https://play.google.com/store/apps/details?id=com.mutsumix.sodatterbt}]
 
 === 植物栽培における面倒を解消するアイディアの数々
@@ -85,7 +83,7 @@ acorn
 そんなこんなで仕様が固まってきたら、「マークダウン形式で仕様書に出して」と指示して仕様書を作ってもらいます。
 （今回はCLAUDE.mdに加え、SPEC.md、DATABASE.md、DEVICES.mdというファイルが作成されました）
 
-//image[claude-chat][Claudeとのチャット画面][scale=0.75]
+//image[claude-chat][Claudeとのチャット画面][scale=0.90]
 
 次はそれを開発機上に作成したフォルダに配置します。
 
@@ -148,7 +146,7 @@ ReaddyにUIデザインを考えてもらうためにもプロンプトが必要
 では、実際にコードを生成していきます。
 AIコーディングは、動き始めると、やることがありません。ただ見守るのみです。
 
-//image[claude-wip][Claude Codeによる実装の様子][scale=0.75]
+//image[claude-wip-shadow][Claude Codeによる実装の様子][scale=0.75]
 
 === Worktreeで並行実装を試す
 
@@ -165,7 +163,7 @@ UIのコードを渡してJetpack Composeへ変換するという方法に揺ら
 
 作業中、Claude Codeには、実装でうまくいかなかった箇所を記録するように指示を出していました。
 
-//image[mistake-log][CLAUDE.mdに蓄積されたミスの記録][scale=0.75]
+//image[mistake-log-shadow][CLAUDE.mdに蓄積されたミスの記録][scale=0.75]
 
 やはりBluetoothで接続する機器との連携箇所でのミスが目立ちました。
 BLEの実行時権限を与えなくてはいけないところでしていなかったり、プリンターのメーカー特有のSDKの扱い方でミスを重ねたのがわかります。
@@ -176,9 +174,9 @@ BLEの実行時権限を与えなくてはいけないところでしていな�
 
 //image[app-capture][完成したアプリ（左からホーム画面・栽培詳細・設定）][scale=0.75]
 
-//image[app-epaper][育成中の種の情報を電子ペーパーで表示している様子][scale=0.5]
-//image[app-scale][電子はかりから重量を受信している様子][scale=0.5]
-//image[app-printer][収穫時、収穫日や重量の情報を印刷している様子][scale=0.5]
+//image[app-epaper][育成中の種の情報を電子ペーパーで表示している様子][scale=0.35]
+//image[app-scale][電子はかりから重量を受信している様子][scale=0.35]
+//image[app-printer][収穫時、収穫日や重量の情報を印刷している様子][scale=0.35]
 //image[app-harvest][収穫物に収穫情報を貼り付けている様子][scale=0.5]
 
 これで当初の目的であった、水耕栽培の栽培から収穫までのログ収集を効率化するアプリが完成しました。

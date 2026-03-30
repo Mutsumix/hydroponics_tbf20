@@ -146,13 +146,13 @@ A2DPというプロファイルは「音声を送る」という枠組みを定�
 ここではBluetooth通信に関わるコーデックに絞って紹介します。
 
 //table[audio_codecs][主なBluetoothオーディオコーデック]{
-コーデック	最大ビットレート	音質	備考
+コーデック	音質	備考
 ---------------------------------------------------------
-SBC	328kbps	標準	全Bluetooth機器が対応する必須コーデック
-AAC	320kbps	良好	Apple製品で標準的に使用される
-aptX / aptX HD	352 / 576kbps	高音質	Qualcomm開発。主にAndroid向け
-LDAC	990kbps	ハイレゾ相当	Sony開発。Android 8.0以降で標準サポート
-LC3	345kbps	高音質	LE Audio（BLE音声）の標準コーデック
+SBC	標準	全Bluetooth機器が対応する必須コーデック
+AAC	良好	Apple製品で標準的に使用される
+aptX / aptX HD	高音質	Qualcomm開発。主にAndroid向け
+LDAC	ハイレゾ相当	Sony開発。Android 8.0以降で標準サポート
+LC3	高音質	LE Audio（BLE音声）の標準コーデック
 //}
 
 重要なのは、@<b>{送信側（スマートフォン）と受信側（イヤホン）の両方が同じコーデックに対応していなければ高音質なデータを送れない}という点です。
