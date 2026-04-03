@@ -12,12 +12,8 @@ CHAPS:
     - 40_android.re
     - 50_claudecode.re
     - 60_app.re
-
-# # その他
-# - 10_other.re
-
 # 4コマ漫画
-# - XX_4koma.re
+    - 90_4koma.re
 
 POSTDEF:
 # あとがき

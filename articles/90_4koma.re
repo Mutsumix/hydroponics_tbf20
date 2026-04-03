@@ -1,5 +1,9 @@
-= フレッシュキャベツ4コマ！
+=[nodisp] フレッシュキャベツ4コマ！
 
-//indepimage[4koma_1]
+//embed[latex]{
+\pagestyle{empty}
+//}
+
+//indepimage[4koma_1_titled]
 
 //indepimage[4koma_2]
