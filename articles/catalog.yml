@@ -3,12 +3,12 @@ PREDEF:
  - 00_introduction.re
 
 CHAPS:
-  - 第1部 Android:
+  - Android:
     - 10_android.re
-  - 第2部 Bluetooth:
+  - Bluetooth:
     - 20_bluetooth.re
     - 30_device.re
-  - 第3部 植物:
+  - 植物:
     - 40_android.re
     - 50_claudecode.re
     - 60_app.re

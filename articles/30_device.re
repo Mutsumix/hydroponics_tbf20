@@ -2,11 +2,11 @@
 
 前章までで、Androidというプラットフォームの特徴と、Bluetoothという通信技術の仕組みを学びました。この章では、いよいよ実際のデバイスをAndroidアプリから操作し、その通信ログを読み解いていきます。
 
-本章で使用するアプリは3つのデバイスと通信します。電子はかり（BLE）、モバイルプリンター（Bluetooth Classic）、電子ペーパータグ（HTTP経由）。
+本章で使用するアプリは3つのデバイスと通信します。電子はかり（BLE）、モバイルプリンター（Bluetooth Classic）、電子ペーパータグ（HTTP経由のBLE）。
 それぞれ通信方式が異なるため、前章で学んだBluetooth ClassicとBLEの違いが、実際のコードとログにどう現れるかを確認できます。
 
 この章を読むことで、Bluetoothの通信を理解することができると思いますので、
-紹介する端末がやAndroid端末そのものがなくても、読み進めていただいて大丈夫です。
+紹介する端末やAndroid端末そのものがなくても、読み進めていただいて大丈夫です。
 
 == アプリの概要
 
@@ -24,22 +24,6 @@
 GitHubにもソースコードを公開しているので、興味のある方は、直接Kotlinのコードを見ることも可能です。@<fn>{btlab_github}
 
 //footnote[btlab_github][@<href>{https://github.com/Mutsumix/bluetooth-learning-lab-android}]
-
-#@# === 技術スタック
-
-#@# 本書のアプリはKotlinで記述し、Jetpack Compose（Material 3）でUIを構成しています。アーキテクチャにはMVVM（Model-View-ViewModel）を採用し、各画面がScreen（View）、ViewModel、UiStateの3層で構成されています。
-
-#@# //table[tech_stack][アプリの技術スタック]{
-#@# 技術	用途
-#@# ---------------------------------------------------------
-#@# Kotlin	開発言語
-#@# Jetpack Compose	UI構築（Material 3）
-#@# Kotlin Coroutines / Flow	非同期処理・状態管理
-#@# Android BLE API	電子はかりとのBLE通信
-#@# StarXpand SDK	モバイルプリンターとのBluetooth Classic通信
-#@# OkHttp	電子ペーパータグへのHTTP通信
-#@# Room	計量データのローカル保存
-#@# //}
 
 === ログの仕組みと読み方
 
@@ -120,19 +104,23 @@ BLE通信の最初のステップは、周囲のデバイスをスキャンす�
 接続が確立すると、すぐにサービス発見（Service Discovery）が始まります。第2章で説明したように、BLEデバイスはサービスとキャラクタリスティックという階層構造でデータを公開しています。セントラルは接続後にこの構造を問い合わせ、「このデバイスは何ができるのか」を把握します。
 
 //emlistnum{
-[14:23:47.456][GATT] Services discovered: 3 service(s)
-[14:23:47.457][GATT]   Service: FFF0 (2 characteristic(s))
-[14:23:47.458][GATT]     └ FFF4 [Notify]
-[14:23:47.459][GATT]     └ 36F5 [Write]
-[14:23:47.460][GATT]   Service: 180A (3 characteristic(s))
-[14:23:47.461][GATT]     └ 2A29 [Read]
-[14:23:47.462][GATT]     └ 2A24 [Read]
-[14:23:47.463][GATT]     └ 2A26 [Read]
+[00:35:51.652][GATT] Discovering services...
+[00:35:52.131][GATT] Services discovered: 3 service(s)
+[00:35:52.134][GATT]   Service: 1800 (2 characteristic(s))
+[00:35:52.136][GATT]     └ 2A00 [Read]
+[00:35:52.137][GATT]     └ 2A01 [Read]
+[00:35:52.139][GATT]   Service: 1801 (3 characteristic(s))
+[00:35:52.141][GATT]     └ 2A05 [Indicate]
+[00:35:52.142][GATT]     └ 2B3A [Read]
+[00:35:52.143][GATT]     └ 2B29 [Read, Write]
+[00:35:52.144][GATT]   Service: FFF0 (2 characteristic(s))
+[00:35:52.145][GATT]     └ 36F5 [Write]
+[00:35:52.146][GATT]     └ FFF4 [Read, Notify]
 //}
 
 3つのサービスが発見されました。ここで重要なのは@<tt>{FFF0}サービスです@<fn>{fff0_uuid}。この中に2つのキャラクタリスティックがあります。@<tt>{FFF4}や@<tt>{36F5}も同様に、Decent Scale固有の番号です。つまり、Decent Scaleと通信する限り、これらの番号は常に登場します。
 
-//footnote[fff0_uuid][@<tt>{FFF0}という値自体に特別な意味はありません。Bluetooth SIGが「ベンダーが自由に使ってよい」と定めた範囲（@<tt>{0xFFF0}〜@<tt>{0xFFFF}）に含まれる番号で、Decent社が自社のサービスに割り当てたものです。一方、後述の@<tt>{180A}（Device Information Service）のように、Bluetooth SIGが用途ごとに定義した標準UUIDも存在します。]
+//footnote[fff0_uuid][@<tt>{FFF0}という値自体に特別な意味はありません。Bluetooth SIGが「ベンダーが自由に使ってよい」と定めた範囲（@<tt>{0xFFF0}〜@<tt>{0xFFFF}）に含まれる番号で、Decent社が自社のサービスに割り当てたものです。一方、@<tt>{1800}や@<tt>{1801}のように、Bluetooth SIGが用途ごとに定義した標準UUIDのサービスも必ずといっていいほど現れます。]
 
 //table[decent_chars][Decent Scaleのキャラクタリスティック]{
 UUID	プロパティ	役割
@@ -141,17 +129,17 @@ FFF4	Notify	重量データのストリーミング（はかり → スマホ）
 36F5	Write	コマンド送信（スマホ → はかり）
 //}
 
-もう1つの@<tt>{180A}サービスは「Device Information Service」というBLE標準のサービスで、製造者名やモデル番号、ファームウェアバージョンなどの情報を提供します。今回の通信には直接使いませんが、BLEデバイスが自身の情報を公開する仕組みとして覚えておくと良いでしょう。
+ほかの2つはいずれもBluetooth SIGが定めた標準サービスです。@<tt>{1800}はGeneric Accessで、端末名（@<tt>{2A00}）や外観カテゴリ（@<tt>{2A01}）などを読めるキャラクタリスティックを含みます。@<tt>{1801}はGeneric Attributeで、サービス変更の通知（@<tt>{2A05}）などGATTそのものの挙動に関わる項目が入ります。今回の重量計測には直接使いませんが、BLEスタックが公開する定番の「お作法」として覚えておくと良いでしょう（ファームウェアや機種によっては、製造者名などを載せた@<tt>{180A} Device Informationが追加で現れることもあります）。
 
 === ステップ3：Notifyのサブスクライブ
 
 サービス構造がわかったら、重量データを受信するためにNotifyをサブスクライブ（購読登録）します。
 
 //emlistnum{
-[14:23:47.500][NOTIFY] Subscribing to FFF4...
-[14:23:47.501][NOTIFY] Writing CCCD descriptor (0x0001 = ENABLE_NOTIFICATION)
-[14:23:47.600][NOTIFY] Enabled on FFF4 (CCCD=0x0001)
-[14:23:47.601][NOTIFY] Receiving weight data at ~10Hz
+[00:35:52.147][NOTIFY] Subscribing to FFF4...
+[00:35:52.152][NOTIFY] Writing CCCD descriptor (0x0001 = ENABLE_NOTIFICATION)
+[00:35:52.170][NOTIFY] Enabled on FFF4 (CCCD=0x0001)
+[00:35:52.171][NOTIFY] Receiving weight data at ~10Hz
 //}
 
 ここで登場する@<b>{CCCD（Client Characteristic Configuration Descriptor）}は、Notifyを有効にするための特別なディスクリプタ（UUID: 2902）です。ディスクリプタとは、キャラクタリスティックに付属する設定値や補足情報のことです。前章の図書館のたとえでいえば、サービスが「棚」、キャラクタリスティックが「本」、ディスクリプタはその本に貼る「付箋」にあたります。CCCDは「この本が更新されたら教えて」と書き込むための付箋です。セントラルがこのディスクリプタに@<tt>{0x0001}を書き込むことで、「このキャラクタリスティックの変化を通知してほしい」とペリフェラルに伝えます。
@@ -160,12 +148,12 @@ FFF4	Notify	重量データのストリーミング（はかり → スマホ）
 
 === ステップ4：重量データの受信（Notify）
 
-サブスクライブが完了すると、電子はかりは毎秒約10回（10Hz）の頻度で重量データを送信し始めます。何も載せていなくても、0gのデータが送られ続けます。
+サブスクライブが完了すると、電子はかりは毎秒約10回（10Hz）前後の頻度で重量データを送信し始めます。載せた重量に応じた値が流れ続け、何も載せていなければ0g相当のデータが送られ続けます。
 
 //emlistnum{
-[14:23:47.700][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
-[14:23:47.800][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
-[14:23:47.900][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
+[00:35:52.208][NOTIFY] RX: 03 CE 00 BE 00 00 73 → 19.0g (stable)
+[00:35:52.327][NOTIFY] RX: 03 CE 00 BE 00 00 73 → 19.0g (stable)
+[00:35:52.417][NOTIFY] RX: 03 CE 00 BE 00 00 73 → 19.0g (stable)
 //}
 
 @<tt>{RX}はReceive（受信）を意味します。16進数で表示されているのが、Notifyで届いた生のバイト列です。このDecent Scaleは1回のNotifyで7バイトのデータを送信します。
@@ -386,7 +374,7 @@ Waveshare ESP32-S3-DEV-KIT-N16R8@<fn>{esp32_aliexpress}	1つ	AliExpress	¥1,842
 
 //footnote[esp32_aliexpress][@<href>{https://ja.aliexpress.com/item/1005009294795718.html}]
 
-//footnote[gicisky_aliexpress][@<href>{https://ja.aliexpress.com/item/1005002399342939.html} ちなみにこの商品、気に入ったので最近買い足したのですが、黄色も発色できる新型が届きました。本書で使用しているOpenEPaperLinkは、この新型には対応しておらず、おそらくもうこのリンクからの購入はできないと思います。サポートに問い合わせてみたのですが、サイトの仕様にはRed, Blackのみの発色と書かれていますが、すでにそれらの在庫は存在しないと言われました。そのため、本書でESP32からの電子ペーパー制御に興味を持たれたら、OpenEPaperLink対応の別の電子ペーパーのご購入を強くお勧めいたします。]
+//footnote[gicisky_aliexpress][@<href>{https://ja.aliexpress.com/item/1005002399342939.html} ちなみにこの商品、気に入ったので最近買い足したのですが、黄色も発色できる新型が届きました。本書で使用しているOpenEPaperLinkは、この新型には対応しておらず、おそらくもうこのリンクからの購入はできないと思います。サポートに問い合わせてみたのですが、サイトの仕様にはRed, Blackのみの発色と書かれているにも関わらず、すでにそれらの在庫は存在しないと言われました。そのため、本書でESP32からの電子ペーパー制御に興味を持たれたら、OpenEPaperLink対応の別の電子ペーパーのご購入を強くお勧めいたします。]
 
 === 構成：Android → ESP32 → 電子ペーパー
 
@@ -428,12 +416,13 @@ Wi-Fi経由でHTTPリクエストを受け付けます。
 //}
 
 OkHttp（Android/Kotlin向けの定番HTTPクライアントライブラリ）を使ったmultipart/form-data形式のPOSTリクエストです。
-電子ペーパータグのMACアドレスと、JPEG画像データを送信しています。ESP32がこのリクエストを受け取ると、内部でBLEを使って電子ペーパータグに画像データを書き込みます。
+電子ペーパータグのMACアドレスと、JPEG画像データを送信しています。ESP32がこのリクエストを受け取ると、内部でBLEを使って電子ペーパータグに画像データを書き込みます。@<fn>{openepaperlink_oss}
+//footnote[openepaperlink_oss][OpenEPaperLinkのコア実装はGitHubでソース公開されています@<href>{https://github.com/OpenEPaperLink/OpenEPaperLink}。ライセンスはリポジトリやドキュメントの表記に従ってください（公式情報では CC BY-NC-SA 4.0 など、非商用条件を含む例があります）。]
 
 Bluetooth通信の詳細を追うことはできませんが、「Bluetoothを直接使えない場面で、中継機を介してHTTPに変換する」というアーキテクチャは、IoTシステムの設計パターンとして参考になるでしょう。
 
 
-== まとめ
+== この章のまとめ
 
 この章では、3つのデバイスとの通信を通じて、Bluetoothの仕組みが実際のアプリでどのように現れるかを見てきました。
 

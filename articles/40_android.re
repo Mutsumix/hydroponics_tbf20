@@ -1,11 +1,12 @@
 = Androidアプリ開発の基礎
 
-第3章までで、3つのデバイスとの通信がどのように行われるかをログとともに追いかけてきました。ここからは、いよいよ自分で作る側に回ります。
+第3章までで、3つのデバイスとの通信がどのように行われるかをログとともに追いかけてきました。
+ここからは、いよいよ自分のアプリで活用する作業に移ります。
 
-この章では、Androidアプリ開発の環境構築からプロジェクトの作成、UIの基本、アーキテクチャの考え方までを駆け足で紹介します。Android開発の教科書を書くつもりはありません。「本書のコードを読むために最低限知っておくべきこと」に絞った内容です。KotlinやAndroidに馴染みのある方は、この章は読み飛ばしてもらって構いません。
+その前段階としてこの章では、Androidアプリ開発の環境構築からプロジェクトの作成、UIの基本、アーキテクチャの考え方までを駆け足で紹介します。Android開発の教科書を書くつもりはありません。「本書のコードを読むために最低限知っておくべきこと」に絞った内容です。KotlinやAndroidに馴染みのある方は、この章は読み飛ばしてもらって構いません。
 
-逆に、これまでAndroidアプリを作ったことがない方は、この章を手を動かしながら読むことをおすすめします。コードの意味がわからないまま次章に進んでも、おそらく途中で迷子になります。
-
+逆に、これまでAndroidアプリを作ったことがない方は、これからAndroidアプリを作りたいという方は、この章を手を動かしながら読むことをおすすめします。
+コードの意味がわかると、次章以降の理解がより深まるでしょう。
 
 == Android Studioのインストール
 
@@ -13,19 +14,23 @@ Android開発を始めるにあたって最初にやることは、Android Studi
 
 Android Studioは、Googleが公式に提供しているAndroidアプリ開発用のIDE（統合開発環境）です。JetBrains社のIntelliJ IDEAをベースに作られており、コードの編集、ビルド、デバッグ、エミュレータの実行まで、開発に必要なほぼすべてがこの1つのアプリに詰まっています。
 
-ダウンロードは公式サイト（https://developer.android.com/studio）から行えます。Windows、macOS、Linux、ChromeOSに対応しています。第1章で「え、Android開発ってMacでできるの？」と驚いた話を書きましたが、逆に言えばWindowsでもLinuxでも問題なく開発できるということです。
+ダウンロードは公式サイト（https://developer.android.com/studio）から行えます。Windows、macOS、Linux、ChromeOSに対応しています。
+第1章で「え、Android開発ってMacでできるの？」と驚いた話を書きましたが、WindowsでもLinuxでも問題なく開発が可能です。
 
 //image[android-download-shadow][Android Studio公式ダウンロードページ][scale=0.75]
 
 ここでiOS開発と比較してみましょう。iOSアプリの開発にはXcodeが必要で、XcodeはmacOSでしか動作しません。つまりiOSアプリを作りたければ、Macを買うところから始まります。Androidにはそうした制約がありません。これは第1章で触れた「オープンなプラットフォーム」という思想が、開発環境にも一貫して現れているところです。
 
-さらに言えば、Android開発は必ずしもAndroid Studioでなければならないわけでもありません。ビルドシステムであるGradleとAndroid SDKはAndroid Studioとは独立したツールなので、VSCodeとコマンドラインだけでもアプリをビルドして実機にインストールすることは可能です。FlutterやReact NativeによるAndroid開発では、むしろVSCodeの方が主流のエディタです。
+さらに言えば、Android開発は必ずしもAndroid Studioでなければならないわけでもありません。
+ビルドシステムであるGradleとAndroid SDKはAndroid Studioとは独立したツールなので、VSCodeとコマンドラインだけでもアプリをビルドして実機にインストールすることは可能です。
+FlutterやReact NativeによるAndroid開発では、むしろVSCodeの方が主流のエディタです。
 
 === バージョンの話
 
 本書の執筆時点（2026年3月）での安定版はAndroid Studio Panda 2です。Android Studioのバージョン名は動物の名前がアルファベット順に付けられており、過去には@<b>{G}iraffe、@<b>{H}edgehog、@<b>{I}guana、@<b>{J}ellyfish、@<b>{K}oala、@<b>{L}adybug、@<b>{M}eerkatなどがありました。本書のスクリーンショットはPanda 2に基づいていますが、基本的な操作は多少バージョンが違っても大きく変わりません。
 
-ちなみに、Android OS自体にもアルファベット順のコードネームがあり、こちらはお菓子の名前でした@<fn>{android_codename}。Cupcake（1.5）、Donut（1.6）、Eclair（2.0）、KitKat（4.4）、Lollipop（5.0）、Oreo（8.0）、Pie（9.0）といった具合です。Android 10以降、公式にはお菓子のコードネームは使われなくなりましたが、内部的には続いているとされています。Android OSはお菓子、Android Studioは動物と、命名体系が別である点は紛らわしいので覚えておくとよいでしょう。
+ちなみに、Android OS自体にもアルファベット順のコードネームがあり、こちらはお菓子の名前でした@<fn>{android_codename}。@<b>{C}upcake（1.5）、@<b>{D}onut（1.6）、@<b>{E}clair（2.0）、@<b>{K}itKat（4.4）、@<b>{L}ollipop（5.0）、@<b>{O}reo（8.0）、@<b>{P}ie（9.0）といった具合です。Android 10以降、公式にはお菓子のコードネームは使われなくなりましたが、内部的には続いているとされています。
+Android OSはお菓子、Android Studioは動物と、命名体系が別であることをトリビアとして覚えておくと、いつかどこかで役に立つかもしれません。
 
 //footnote[android_codename][Android 10以降の内部コードネームとして、Q: Quince Tart、R: Red Velvet Cake、S: Snow Cone、T: Tiramisu、U: Upside Down Cake、V: Vanilla Ice Creamなどが知られています。]
 
@@ -39,26 +44,26 @@ Android Studioは、Googleが公式に提供しているAndroidアプリ開発�
 
 Android Studioを起動すると、ウェルカム画面が表示されます。「New Project」を選択してプロジェクトを作成しましょう。
 
-//image[welcome][Android Studioウェルカム画面][scale=0.75]
+//image[welcome][Android Studioウェルカム画面][scale=0.5]
 
 === テンプレートの選択
 
 プロジェクト作成画面では、いくつかのテンプレートが並んでいます。ここで選ぶのは「Empty Activity」です。
 
-//image[templates][テンプレート選択画面][scale=0.75]
+//image[templates][テンプレート選択画面][scale=0.5]
 
 === プロジェクトの設定
 
 テンプレートを選んだら、いくつかの設定を入力します。
 
-//image[settings][プロジェクト設定画面][scale=0.75]
+//image[settings][プロジェクト設定画面][scale=0.5]
 
 //table[project_settings][プロジェクト作成時の設定例]{
 項目	説明	本書での設定例
 ---------------------------------------------------------
-Name	アプリの表示名	My Application（任意の名前でOK）
-Package name	アプリの一意な識別子	com.sample.app（任意の名前でOK）
-Save location	プロジェクトの保存先	
+Name	アプリの表示名	My Application（任意）
+Package name	アプリの一意な識別子	com.sample.app（任意）
+Save location	プロジェクトの保存先（任意）
 Minimum SDK	サポートする最低Androidバージョン	API 26（Android 8.0）
 Build configuration language	ビルドスクリプトの言語	Kotlin DSL
 //}
@@ -320,7 +325,7 @@ MVVMで重要なのは、データの流れが一方向（単方向）である�
 //emlist{
 ユーザー操作 → View → ViewModel → Model
                 ↑                     |
-                |     状態の更新       |
+                |     状態の更新        |
                 ← ← ← ← ← ← ← ← ←
 //}
 
@@ -388,9 +393,9 @@ app/src/main/java/com/mutsumix/sodatterbt/
 └── SodatterApplication.kt
 //}
 
-@<tt>{main/}がアプリ本体、@<tt>{test/}が単体テスト、@<tt>{androidTest/}がUIテストです。この3つのディレクトリが並列に存在するのがAndroidプロジェクトの基本構造です。@<tt>{test/}のコードは開発マシンのJVM上で高速に実行され、@<tt>{androidTest/}のコードはエミュレータや実機の上で動きます。
+@<tt>{app/src/main/}にアプリ本体のコードとリソースが置かれます。一方、@<tt>{test/}は単体テスト、@<tt>{androidTest/}はUI（インストゥルメント）テスト用のソースセット名です。Gradleがこうした役割を想定しているだけで、プロジェクト作成直後やテストをまだ書いていない段階では、@<tt>{test/}や@<tt>{androidTest/}のディレクトリが無いことも珍しくありません。本書の栽培管理アプリの開発リポジトリも、現時点では@<tt>{main/}のみです。テストを追加したあとは、@<tt>{test/}のコードは開発マシンのJVM上で高速に実行され、@<tt>{androidTest/}のコードはエミュレータや実機の上で動きます。
 
-@<tt>{main/}の中を見ると、@<tt>{ui/}以下が画面ごとにパッケージ分けされたViewとViewModel、@<tt>{data/}がModel層、@<tt>{bluetooth/}がデバイス通信のクライアントです。ファイルを探すときに「これはどの層の話だろう」と考えれば、目的のファイルにたどり着けるようになっています。
+@<tt>{main/}の中を見ると、@<tt>{ui/}以下が画面ごとにパッケージ分けされたViewとViewModel、@<tt>{data/}がModel層、@<tt>{device/}がデバイス通信のクライアントです。ファイルを探すときに「これはどの層の話だろう」と考えれば、目的のファイルにたどり着けるようになっています。
 
 === State Hoisting
 
@@ -450,7 +455,7 @@ UIテスト	エミュレータまたは実機	遅い	画面の表示と操作
 
 ViewModelのロジックをテストするには、@<tt>{app/src/test/}ディレクトリに通常のKotlinのテストを書きます。テストファイルの配置は、テスト対象と同じパッケージ構造を@<tt>{test/}側にも再現する@<b>{ミラーパッケージ構造}（Mirror Package Structure）が標準です。たとえば@<tt>{ui/harvest/HarvestViewModel.kt}のテストは、@<tt>{test/.../ui/harvest/HarvestViewModelTest.kt}に置きます。
 
-JavaScript/TypeScriptの世界では、ソースファイルと同じディレクトリにテストを並べる@<b>{コロケーション}（Co-location）が主流ですが、Android/Gradleでは@<tt>{src/main/}・@<tt>{src/test/}・@<tt>{src/androidTest/}というソースセットの分離が前提なので、ミラー構造が自然な選択になります。
+JavaScript/TypeScriptの世界では、ソースファイルと同じディレクトリにテストを並べる@<b>{コロケーション}（Co-location）が主流ですが、Android/Gradleでは@<tt>{src/main/}, @<tt>{src/test/}, @<tt>{src/androidTest/}というソースセットの分離が前提なので、ミラー構造が自然な選択になります。
 
 //emlist{
 class ScaleViewModelTest {
@@ -515,4 +520,4 @@ fun ScaleScreenPreview_Disconnected() {
 
 一方で、宣言的UIへの移行はiOSのSwiftUIとまったく同じ方向を向いており、プラットフォームが違っても「良いUI開発とは何か」についての答えは収斂しつつあることもわかりました。
 
-次章では、これらの基礎知識を前提に、AIを活用して使ってアプリの実装を進めていきます。
+次章からは、これらの基礎知識を前提に、AIを活用して使ってアプリの実装を進めていきます。
