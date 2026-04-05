@@ -104,18 +104,18 @@ BLE通信の最初のステップは、周囲のデバイスをスキャンす�
 接続が確立すると、すぐにサービス発見（Service Discovery）が始まります。第2章で説明したように、BLEデバイスはサービスとキャラクタリスティックという階層構造でデータを公開しています。セントラルは接続後にこの構造を問い合わせ、「このデバイスは何ができるのか」を把握します。
 
 //emlistnum{
-[00:35:51.652][GATT] Discovering services...
-[00:35:52.131][GATT] Services discovered: 3 service(s)
-[00:35:52.134][GATT]   Service: 1800 (2 characteristic(s))
-[00:35:52.136][GATT]     └ 2A00 [Read]
-[00:35:52.137][GATT]     └ 2A01 [Read]
-[00:35:52.139][GATT]   Service: 1801 (3 characteristic(s))
-[00:35:52.141][GATT]     └ 2A05 [Indicate]
-[00:35:52.142][GATT]     └ 2B3A [Read]
-[00:35:52.143][GATT]     └ 2B29 [Read, Write]
-[00:35:52.144][GATT]   Service: FFF0 (2 characteristic(s))
-[00:35:52.145][GATT]     └ 36F5 [Write]
-[00:35:52.146][GATT]     └ FFF4 [Read, Notify]
+[14:23:47.456][GATT] Discovering services...
+[14:23:47.890][GATT] Services discovered: 3 service(s)
+[14:23:47.891][GATT]   Service: 1800 (2 characteristic(s))
+[14:23:47.892][GATT]     └ 2A00 [Read]
+[14:23:47.893][GATT]     └ 2A01 [Read]
+[14:23:47.894][GATT]   Service: 1801 (3 characteristic(s))
+[14:23:47.895][GATT]     └ 2A05 [Indicate]
+[14:23:47.896][GATT]     └ 2B3A [Read]
+[14:23:47.897][GATT]     └ 2B29 [Read, Write]
+[14:23:47.898][GATT]   Service: FFF0 (2 characteristic(s))
+[14:23:47.899][GATT]     └ 36F5 [Write]
+[14:23:47.900][GATT]     └ FFF4 [Read, Notify]
 //}
 
 3つのサービスが発見されました。ここで重要なのは@<tt>{FFF0}サービスです@<fn>{fff0_uuid}。この中に2つのキャラクタリスティックがあります。@<tt>{FFF4}や@<tt>{36F5}も同様に、Decent Scale固有の番号です。つまり、Decent Scaleと通信する限り、これらの番号は常に登場します。
@@ -136,10 +136,10 @@ FFF4	Notify	重量データのストリーミング（はかり → スマホ）
 サービス構造がわかったら、重量データを受信するためにNotifyをサブスクライブ（購読登録）します。
 
 //emlistnum{
-[00:35:52.147][NOTIFY] Subscribing to FFF4...
-[00:35:52.152][NOTIFY] Writing CCCD descriptor (0x0001 = ENABLE_NOTIFICATION)
-[00:35:52.170][NOTIFY] Enabled on FFF4 (CCCD=0x0001)
-[00:35:52.171][NOTIFY] Receiving weight data at ~10Hz
+[14:23:47.950][NOTIFY] Subscribing to FFF4...
+[14:23:47.951][NOTIFY] Writing CCCD descriptor (0x0001 = ENABLE_NOTIFICATION)
+[14:23:48.050][NOTIFY] Enabled on FFF4 (CCCD=0x0001)
+[14:23:48.051][NOTIFY] Receiving weight data at ~10Hz
 //}
 
 ここで登場する@<b>{CCCD（Client Characteristic Configuration Descriptor）}は、Notifyを有効にするための特別なディスクリプタ（UUID: 2902）です。ディスクリプタとは、キャラクタリスティックに付属する設定値や補足情報のことです。前章の図書館のたとえでいえば、サービスが「棚」、キャラクタリスティックが「本」、ディスクリプタはその本に貼る「付箋」にあたります。CCCDは「この本が更新されたら教えて」と書き込むための付箋です。セントラルがこのディスクリプタに@<tt>{0x0001}を書き込むことで、「このキャラクタリスティックの変化を通知してほしい」とペリフェラルに伝えます。
@@ -151,9 +151,9 @@ FFF4	Notify	重量データのストリーミング（はかり → スマホ）
 サブスクライブが完了すると、電子はかりは毎秒約10回（10Hz）前後の頻度で重量データを送信し始めます。載せた重量に応じた値が流れ続け、何も載せていなければ0g相当のデータが送られ続けます。
 
 //emlistnum{
-[00:35:52.208][NOTIFY] RX: 03 CE 00 BE 00 00 73 → 19.0g (stable)
-[00:35:52.327][NOTIFY] RX: 03 CE 00 BE 00 00 73 → 19.0g (stable)
-[00:35:52.417][NOTIFY] RX: 03 CE 00 BE 00 00 73 → 19.0g (stable)
+[14:23:48.100][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
+[14:23:48.200][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
+[14:23:48.300][NOTIFY] RX: 03 CE 00 00 00 00 CD → 0.0g (stable)
 //}
 
 @<tt>{RX}はReceive（受信）を意味します。16進数で表示されているのが、Notifyで届いた生のバイト列です。このDecent Scaleは1回のNotifyで7バイトのデータを送信します。
@@ -394,6 +394,25 @@ OpenEPaperLinkはESP32をはじめとする複数のマイコン基板に対応�
 Wi-Fi経由でHTTPリクエストを受け付けます。
 
 つまり、実際のBluetooth通信はESP32に委譲し、Android側はHTTPで画像データを送信するという構成です。
+
+=== OpenEPaperLinkのセットアップ
+
+ESP32を電子ペーパーの中継機として使うには、OpenEPaperLinkのファームウェアを書き込む必要があります。大まかな手順は以下のとおりです。
+
+ 1. ESP32をUSBケーブルでPCに接続する
+ 2. OpenEPaperLinkのWeb Flasher@<fn>{oepl_flasher}にブラウザでアクセスする
+ 3. 使用するボード（本書ではESP32-S3）を選択し、「Flash」ボタンを押す
+ 4. 書き込みが完了すると、ESP32がWi-Fiアクセスポイントとして起動する
+ 5. スマートフォンやPCからそのアクセスポイントに接続し、管理画面（@<tt>{http://192.168.4.1}）から自宅のWi-Fiに接続設定を行う
+ 6. 設定完了後、ESP32は自宅ネットワーク上でHTTPサーバーとして動作し、同じネットワーク内の端末からアクセスできるようになる
+
+//footnote[oepl_flasher][OpenEPaperLink Web Flasher @<href>{https://install.openepaperlink.org/}　ブラウザからESP32に直接ファームウェアを書き込めます。Web Serial APIを使用するため、ChromeまたはEdgeが必要です。]
+
+ファームウェアの書き込みにはんだ付けやコマンドライン操作は不要で、ブラウザだけで完結します。詳細な手順はOpenEPaperLinkの公式ドキュメント@<fn>{oepl_wiki}を参照してください。
+
+//footnote[oepl_wiki][OpenEPaperLink GitHub Wiki @<href>{https://github.com/OpenEPaperLink/OpenEPaperLink/wiki}]
+
+管理画面が表示できれば、ESP32側の準備は完了です。あとはAndroidアプリからHTTPリクエストを送るだけで、電子ペーパータグの表示を書き換えることができます。
 
 === 画像として送信する理由
 

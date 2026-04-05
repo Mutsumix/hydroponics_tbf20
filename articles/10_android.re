@@ -39,7 +39,7 @@ Androidの歴史は、2003年にカリフォルニア州パロアルトで設立
 そして2008年9月23日、最初のAndroid端末「Dream」をHTCが製造し、T-Mobileから販売されました。Gmail、Googleマップ、YouTube、Android Marketを搭載したこの端末から、Androidの歴史が本格的に動き出しました。
 
 //image[htc_dream][HTC Dream（T-Mobile G1）@<fn>{htc_dream}][scale=0.5]
-//footnote[htc_dream][""T-Mobile G1 launch event" by MobileBurn is licensed under CC BY-SA 2.0 https://creativecommons.org/licenses/by-sa/2.0/]
+//footnote[htc_dream]["T-Mobile G1 launch event" by MobileBurn is licensed under CC BY-SA 2.0 https://creativecommons.org/licenses/by-sa/2.0/]
 
 iPhoneが1社で端末からOSまでを垂直統合していたのに対し、Androidは「誰でも使えるオープンなOS」として登場しました。ひとつのメーカーに縛られないスマートフォンの選択肢が生まれたのです。
 
@@ -113,7 +113,7 @@ Androidがどのように動いているのか、開発者の視点からその�
 AndroidはLinuxカーネルの上に構築されています。メモリ管理やプロセス管理、ネットワーク通信といった基盤はLinuxが担い、その上にAndroid固有のフレームワークが載っています。
 「え、MacでAndroid開発できるの？」という先ほどの驚きの答えもここにあります。
 Android Studioという開発環境がWindows、macOS、Linuxのいずれでも動くように作られているのです@<fn>{windows_cross_platform}。
-また、Android単体の開発ならOSは問いませんが、iOSの開発はmacOSでしか動かないXcodeを使いことになることやUnix系ツールとの親和性を重視して、モバイルアプリの開発現場ではMacが選ばれることが主流に思えます。@<fn>{mac_preference}。
+また、Android単体の開発ならOSは問いませんが、iOSの開発はmacOSでしか動かないXcodeを使うことになることやUnix系ツールとの親和性を重視して、モバイルアプリの開発現場ではMacが選ばれることが主流に思えます。@<fn>{mac_preference}
 
 //footnote[windows_cross_platform][Windowsでも違和感なく開発できるように、IDEや関連ツールがOS差分（パス、権限、シェル、仮想化設定など）を吸収する設計になっています。]
 //footnote[mac_preference][OS要件としてMacが必須という意味ではありません。チームでiOSとAndroidを併走する、あるいはUnix系の開発基盤とそろえる、といった実務上の理由からMacを選ぶケースがある、という補足です。]
@@ -123,7 +123,8 @@ Android Studioという開発環境がWindows、macOS、Linuxのいずれでも�
 開発者はKotlinまたはJavaを使い、AndroidのAPIを通じてアプリを構築します。
 
 かつてAndroid開発といえばJava一択でしたが、2017年にGoogleがKotlinを公式サポート言語として発表しました。2019年には「Kotlin First」を宣言し、新しいAPIやサンプルコードはKotlinを優先する方針を打ち出しました。
-Googleの公式ドキュメントによれば、Kotlinで書かれたAndroidアプリはクラッシュする確率が20%低いとされています。
+Googleの公式ドキュメント@<fn>{kotlin_crash}によれば、Google Playのトップ1,000アプリにおいて、Kotlinを使用しているアプリはユーザーあたりのクラッシュ率が20%低いとされています。
+//footnote[kotlin_crash][Google I/O 2019で「Kotlin First」宣言とともに発表された統計。@<href>{https://developer.android.com/kotlin}]
 
 現在、プロのAndroid開発者の60%以上がKotlinを使用しています。本書で使用するコードもKotlinを採用しています。
 
@@ -147,7 +148,7 @@ iOS 18	24%
 
 //footnote[ios_adoption_2026][Apple Developer, App Store support page（2026年2月12日公表値）]
 
-iOSはs最新と1世代前だけで90%を占めており、検証範囲を設計しやすい状況です。
+iOSは最新と1世代前だけで90%を占めており、検証範囲を設計しやすい状況です。
 
 //table[android_version_share][Androidのバージョン分布（2026年2月時点）@<fn>{android_version_2026}]{
 バージョン	シェア
@@ -294,7 +295,7 @@ OkHttp	HTTPクライアント	電子ペーパーへの画像データ送信
 
 === BLEで受信する：電子はかり
 
-電子スケール（はかり）とBLE（Bluetooth Low Energy）で接続し、重量データを@<b>{受信}します。はかりがNotify（通知）でデータを送り、アプリはそれを受け取る側に徹するパターンです。BLEはセンサーのような小さなデータを低消費電力で送受信する用途に向いています。
+電子はかり（電子スケール）とBLE（Bluetooth Low Energy）で接続し、重量データを@<b>{受信}します。はかりがNotify（通知）でデータを送り、アプリはそれを受け取る側に徹するパターンです。BLEはセンサーのような小さなデータを低消費電力で送受信する用途に向いています。
 
 === 処理を別の機器に委ねる：電子ペーパー
 
