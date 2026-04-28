@@ -23,7 +23,7 @@
 
 //footnote[blue_red_theory][私の深読みですが、当時の競合である赤外線を意識して、「Red」に対する「Blue」という単語を名称イメージとして作用していたのではないかと考えています。公式にはHarald Bluetooth王由来と説明されています。]
 
-Bluetoothのロゴは、Harald王のイニシャル「H（ᚼ）」と「B（ᛒ）」をルーン文字（古代北欧で使われていた表音文字）で重ね合わせたものです。
+Bluetoothのロゴは、Harald王のイニシャル「H（@<raw>$|latex|\raisebox{-2pt}{\includegraphics[height=1em]{images/20_bluetooth/rune_h.png}}$）」と「B（@<raw>$|latex|\raisebox{-1pt}{\includegraphics[height=0.9em]{images/20_bluetooth/rune_b.png}}$）」をルーン文字（古代北欧で使われていた表音文字）で重ね合わせたものです。
 
 //image[btlogo][Bluetoothのロゴ(筆者撮影)][scale=1.0]
 
@@ -275,7 +275,7 @@ Bluetooth機器も例外ではありません。国内メーカーの製品で�
  * 両方の機器に表示された番号が一致するか確認するもの
  * 何の操作もなく自動で接続するもの
  * ボタンを押すだけで完了するもの
- 
+
 
 Bluetooth 2.1で導入された @<b>{SSP（Secure Simple Pairing）} には、以下の4つの認証方式が定義されています。
 
